@@ -1,4 +1,4 @@
-package com.kapps.ordersyt.ui.theme
+package com.michau.countries.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme

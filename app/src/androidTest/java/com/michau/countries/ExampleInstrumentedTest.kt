@@ -1,4 +1,4 @@
-package com.kapps.ordersyt
+package com.michau.countries
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

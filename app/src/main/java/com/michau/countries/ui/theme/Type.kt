@@ -1,4 +1,4 @@
-package com.kapps.ordersyt.ui.theme
+package com.michau.countries.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

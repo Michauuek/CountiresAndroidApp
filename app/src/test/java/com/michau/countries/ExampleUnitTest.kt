@@ -1,4 +1,4 @@
-package com.kapps.ordersyt
+package com.michau.countries
 
 import org.junit.Test
 
