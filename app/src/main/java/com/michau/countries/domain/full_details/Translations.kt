@@ -1,4 +1,4 @@
-package com.michau.countries.domain
+package com.michau.countries.domain.full_details
 import com.squareup.moshi.Json
 
 

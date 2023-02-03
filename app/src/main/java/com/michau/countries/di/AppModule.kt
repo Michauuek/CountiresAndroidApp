@@ -21,7 +21,7 @@ object AppModule {
     @Singleton
     fun provideCountryApi(): CountryApi {
         return Retrofit.Builder()
-            .baseUrl("https://restcountries.com/")
+            .baseUrl("https://restcountries.com")
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create()
