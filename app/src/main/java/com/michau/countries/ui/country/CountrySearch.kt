@@ -1,6 +1,5 @@
 package com.michau.countries.ui.country
 
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -46,7 +45,7 @@ fun CountrySearch(
             Text(text = viewModel.state.country!!.capital!!)
         }
 
-        val regions = listOf("Europe", "Africa", "Americas", "Asia", "Oceania", "Europe", "Africa", "Americas", "Asia", "Oceania")
+        val regions = listOf("Europe", "Africa", "Americas", "Asia", "Oceania")
         LazyRow(modifier = Modifier.fillMaxWidth()){
             items(regions){
                 Card(

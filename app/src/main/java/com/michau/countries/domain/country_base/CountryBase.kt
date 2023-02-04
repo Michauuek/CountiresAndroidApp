@@ -10,4 +10,10 @@ data class CountryBase(
 
     @field:Json(name ="flags")
     var flags: Flags,
+
+    @field:Json(name ="region")
+    var region: String = "",
+
+    @field:Json(name ="population")
+    var population: Int,
 )

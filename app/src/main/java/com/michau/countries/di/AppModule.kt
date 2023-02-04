@@ -1,8 +1,13 @@
 package com.michau.countries.di
 
-import com.michau.countries.data.CountryApi
-import com.michau.countries.data.CountryRepository
-import com.michau.countries.data.CountryRepositoryImpl
+import android.app.Application
+import androidx.room.Room
+import com.michau.countries.data.db.CountryDatabase
+import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.CountryDbRepositoryImpl
+import com.michau.countries.data.remote.CountryApi
+import com.michau.countries.data.remote.CountryRepository
+import com.michau.countries.data.remote.CountryRepositoryImpl
 
 import dagger.Module
 import dagger.Provides
@@ -31,5 +36,20 @@ object AppModule {
     @Singleton
     fun provideTodoRepository(api: CountryApi): CountryRepository {
         return CountryRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCountryDatabase(app: Application): CountryDatabase {
+        return Room.databaseBuilder(
+            app,
+            CountryDatabase::class.java,
+            "country_db"
+        ).build()
+    }
+    @Provides
+    @Singleton
+    fun provideCountryDbRepository(db: CountryDatabase): CountryDbRepository {
+        return CountryDbRepositoryImpl(db.dao)
     }
 }

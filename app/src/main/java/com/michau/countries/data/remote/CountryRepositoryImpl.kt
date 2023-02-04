@@ -1,6 +1,5 @@
-package com.michau.countries.data
+package com.michau.countries.data.remote
 
-import android.util.Log
 import com.michau.countries.domain.country_base.CountryBase
 import com.michau.countries.domain.full_details.Country
 import com.michau.countries.util.Resource
