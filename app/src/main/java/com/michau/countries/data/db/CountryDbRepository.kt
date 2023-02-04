@@ -5,5 +5,6 @@ import kotlinx.coroutines.flow.Flow
 interface CountryDbRepository {
     suspend fun insertCountry(country: CountryEntity)
     suspend fun getCountryByName(name: String): CountryEntity?
-    suspend fun getCountries(): Flow<List<CountryEntity>>
+    fun getCountriesByRegion(region: String): Flow<List<CountryEntity>>
+    fun getCountries(): Flow<List<CountryEntity>>
 }

@@ -1,19 +1,27 @@
 package com.michau.countries.ui.country
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.data.remote.CountryRepository
 import com.michau.countries.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onEmpty
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    private val repository: CountryRepository
+    private val apiRepository: CountryRepository,
+    private val dbRepository: CountryDbRepository
 ): ViewModel() {
 
     var state by mutableStateOf(CountryState())
@@ -34,7 +42,8 @@ class CountryViewModel @Inject constructor(
                 isLoading = true,
                 error = null
             )
-            when(val result = repository.getRegionCountries(region)){
+            val result = apiRepository.getRegionCountries(region)
+            when(result){
                 is Resource.Success -> {
                     countries = countries.copy(
                         data = result.data!!,
@@ -54,7 +63,7 @@ class CountryViewModel @Inject constructor(
     }
     private fun loadCountriesList(){
         viewModelScope.launch {
-            when(val result = repository.getAllCountries()){
+            when(val result = apiRepository.getAllCountries()){
                 is Resource.Success -> {
                     countries = countries.copy(
                         data = result.data!!,
@@ -70,7 +79,6 @@ class CountryViewModel @Inject constructor(
                     )
                 }
             }
-
         }
     }
 
@@ -81,7 +89,7 @@ class CountryViewModel @Inject constructor(
                 error = null
             )
 
-            when(val result = repository.getDetailsByCountryName(name)){
+            when(val result = apiRepository.getDetailsByCountryName(name)){
                 is Resource.Success -> {
                     state = state.copy(
                         country = result.data?.first(),

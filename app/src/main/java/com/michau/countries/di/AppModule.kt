@@ -34,8 +34,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideTodoRepository(api: CountryApi): CountryRepository {
-        return CountryRepositoryImpl(api)
+    fun provideTodoRepository(api: CountryApi, db: CountryDatabase): CountryRepository {
+        return CountryRepositoryImpl(api, CountryDbRepositoryImpl(db.dao))
     }
 
     @Provides

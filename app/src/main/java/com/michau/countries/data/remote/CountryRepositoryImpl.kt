@@ -1,12 +1,16 @@
 package com.michau.countries.data.remote
 
+import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.domain.country_base.CountryBase
 import com.michau.countries.domain.full_details.Country
 import com.michau.countries.util.Resource
+import kotlinx.coroutines.flow.onEmpty
 import javax.inject.Inject
 
 class CountryRepositoryImpl @Inject constructor(
-    private val api: CountryApi
+    private val api: CountryApi,
+    private val dbRepository: CountryDbRepository
 ): CountryRepository {
     override suspend fun getRegionCountries(region: String): Resource<List<CountryBase>> {
         return try {
@@ -33,9 +37,25 @@ class CountryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAllCountries(): Resource<List<CountryBase>> {
+
+        val result = api.getAllCountriesBase()
+
+        //if database is empty
+        dbRepository.getCountries().onEmpty {
+            result.forEach{
+                val country = CountryEntity(
+                    name = it.name,
+                    region = it.region,
+                    population = it.population,
+                    flagUrl = it.flags.png
+                )
+                dbRepository.insertCountry(country)
+            }
+        }
+
         return try {
             Resource.Success(
-                data = api.getAllCountriesBase()
+                data = result
             )
         } catch(e: Exception) {
             e.printStackTrace()
