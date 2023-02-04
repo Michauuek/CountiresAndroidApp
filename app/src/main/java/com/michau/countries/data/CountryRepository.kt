@@ -7,4 +7,5 @@ import com.michau.countries.util.Resource
 interface CountryRepository {
     suspend fun getDetailsByCountryName(name: String): Resource<List<Country>>
     suspend fun getAllCountries(): Resource<List<CountryBase>>
+    suspend fun getRegionCountries(region: String): Resource<List<CountryBase>>
 }

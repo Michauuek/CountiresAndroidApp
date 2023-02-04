@@ -11,4 +11,7 @@ interface CountryApi {
 
     @GET("/v2/all")
     suspend fun getAllCountriesBase(): List<CountryBase>
+
+    @GET("/v2/region/{region}")
+    suspend fun getCountriesFromRegion(@Path("region") region: String): List<CountryBase>
 }

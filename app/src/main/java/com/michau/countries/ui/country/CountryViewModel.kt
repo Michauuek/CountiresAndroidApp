@@ -26,27 +26,22 @@ class CountryViewModel @Inject constructor(
     var countryName by mutableStateOf("")
 
     init {
-        Log.d("TAG", "Featching data")
         loadCountriesList()
     }
-    fun loadCountriesList(){
+
+    fun loadRegionCountries(region: String){
         viewModelScope.launch {
-            state = state.copy(
+            countries = countries.copy(
                 isLoading = true,
                 error = null
             )
-
-            when(val result = repository.getAllCountries()){
+            when(val result = repository.getRegionCountries(region)){
                 is Resource.Success -> {
-                    Log.d("TAG", "ViewModel = ${result.data?.size.toString()}")
                     countries = countries.copy(
                         data = result.data!!,
                         isLoading = false,
                         error = null
                     )
-                    Log.d("TAG", "ViewModel Countries = ${countries.data.size}")
-                    Log.d("TAG", "ViewModel Countries = ${countries.data.get(0)}")
-                    Log.d("TAG", "Success")
                 }
                 is Resource.Error -> {
                     countries = countries.copy(
@@ -54,7 +49,26 @@ class CountryViewModel @Inject constructor(
                         isLoading = false,
                         error = result.message
                     )
-                    Log.d("TAG", "Failure")
+                }
+            }
+        }
+    }
+    private fun loadCountriesList(){
+        viewModelScope.launch {
+            when(val result = repository.getAllCountries()){
+                is Resource.Success -> {
+                    countries = countries.copy(
+                        data = result.data!!,
+                        isLoading = false,
+                        error = null
+                    )
+                }
+                is Resource.Error -> {
+                    countries = countries.copy(
+                        data = emptyList(),
+                        isLoading = false,
+                        error = result.message
+                    )
                 }
             }
 

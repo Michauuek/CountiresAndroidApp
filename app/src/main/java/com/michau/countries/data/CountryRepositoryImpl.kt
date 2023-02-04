@@ -9,6 +9,16 @@ import javax.inject.Inject
 class CountryRepositoryImpl @Inject constructor(
     private val api: CountryApi
 ): CountryRepository {
+    override suspend fun getRegionCountries(region: String): Resource<List<CountryBase>> {
+        return try {
+            Resource.Success(
+                data = api.getCountriesFromRegion(region)
+            )
+        } catch(e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "An unknown error occurred.")
+        }
+    }
 
     override suspend fun getDetailsByCountryName(name: String): Resource<List<Country>> {
         return try {
@@ -24,7 +34,6 @@ class CountryRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getAllCountries(): Resource<List<CountryBase>> {
-        Log.d("TAG", api.getAllCountriesBase().size.toString())
         return try {
             Resource.Success(
                 data = api.getAllCountriesBase()
