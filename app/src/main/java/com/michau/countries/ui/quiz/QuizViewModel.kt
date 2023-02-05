@@ -2,7 +2,9 @@ package com.michau.countries.ui.quiz
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michau.countries.data.remote.CountryRepository
@@ -32,6 +34,14 @@ class QuizViewModel @Inject constructor(
     var countries: List<CountryBase> by mutableStateOf(emptyList())
         private set
 
+    var points by mutableStateOf(0)
+        private set
+
+    var round by mutableStateOf(1)
+        private set
+
+    var progress by mutableStateOf(0.1f)
+
 
     init {
         viewModelScope.launch {
@@ -54,6 +64,7 @@ class QuizViewModel @Inject constructor(
                                message = "Correct"
                            )
                        )
+                       points++
                    } else {
                        sendUiEvent(
                            UiEvent.ShowToast(
@@ -62,9 +73,15 @@ class QuizViewModel @Inject constructor(
                        )
                    }
                     delay(1000)
-                    generateNewRound()
+
+                    if(round < 10) {
+                        round++
+                        progress += 0.1f
+                        generateNewRound()
+                    }
                 }
             }
+            else -> Unit
         }
     }
     private fun generateNewRound(){
@@ -74,6 +91,7 @@ class QuizViewModel @Inject constructor(
         selectCountry()
         generateWrongAnswers()
         answersState.data.shuffle()
+
     }
 
     private fun selectCountry(){

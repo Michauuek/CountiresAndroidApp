@@ -3,18 +3,16 @@
 package com.michau.countries.ui.quiz
 
 import android.widget.Toast
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -28,16 +26,20 @@ fun QuizScreen(
 ){
     val scaffoldState = rememberScaffoldState()
     val context = LocalContext.current
-    
+
     LaunchedEffect(key1 = true){
         viewModel.uiEvent.collect {event ->
             when(event) {
                 is UiEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
+                is UiEvent.ChangeAnswerColor -> {
+                    //tileColor = event.color
+                }
                 is UiEvent.Navigate -> TODO()
                 is UiEvent.PopBackStack -> TODO()
                 is UiEvent.ShowSnackbar -> TODO()
+
             }
         }
     }
@@ -51,7 +53,10 @@ fun QuizScreen(
             verticalArrangement = Arrangement.Center
         ) {
 
-            Text("Country")
+            LinearProgressIndicator(progress = viewModel.progress)
+
+            Text("Round ${viewModel.round}")
+            Text("Points ${viewModel.points}")
 
             Button(onClick = {
                 viewModel.onEvent(QuizScreenEvent.OnNextRoundClick)
@@ -92,7 +97,11 @@ fun AnswerTile(
     name: String,
     modifier: Modifier = Modifier
 ){
-    Card(modifier = modifier) {
-        Text(text = name)
+    Card(
+        modifier = modifier,
+        backgroundColor = Color.White,
+        border = BorderStroke(2.dp, Color.Black)
+    ) {
+        Text(text = name, maxLines = 2)
     }
 }
