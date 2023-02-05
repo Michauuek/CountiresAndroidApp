@@ -1,9 +1,9 @@
 package com.michau.countries.ui.quiz
 
-import com.michau.countries.data.db.CountryEntity
+import com.michau.countries.domain.country_base.CountryBase
 
 data class AnswersState(
-    val data: MutableList<CountryEntity> = mutableListOf(),
+    val data: MutableList<CountryBase> = mutableListOf(),
     val isLoading: Boolean = false,
     val error: String? = null
 )

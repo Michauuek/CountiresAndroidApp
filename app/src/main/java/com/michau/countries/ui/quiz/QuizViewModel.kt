@@ -1,30 +1,23 @@
 package com.michau.countries.ui.quiz
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.michau.countries.data.db.CountryDbRepository
-import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.data.remote.CountryRepository
-import com.michau.countries.ui.country.CountriesListState
-import com.michau.countries.util.Resource
+import com.michau.countries.domain.country_base.CountryBase
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.receiveAsFlow
-import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
-    private val apiRepository: CountryRepository,
-    private val dbRepository: CountryDbRepository
+    private val apiRepository: CountryRepository
 ): ViewModel(){
 
     private val _uiEvent =  Channel<UiEvent>()
@@ -36,42 +29,13 @@ class QuizViewModel @Inject constructor(
     var currentCountry by mutableStateOf(CurrentCountryState())
         private set
 
-    var countries: List<CountryEntity> by mutableStateOf(emptyList())
+    var countries: List<CountryBase> by mutableStateOf(emptyList())
         private set
 
 
     init {
         viewModelScope.launch {
-
-            currentCountry = currentCountry.copy(
-                data = null,
-                isLoading = true,
-                error = null
-            )
-
-            /*countries = dbRepository.getCountries().toList().first()
-            Log.d("TAG", countries.size.toString())*/
-
-            /*if(countries.isEmpty()){
-                countries = apiRepository.getAllCountries().data?.map {
-                    CountryEntity(
-                        name = it.name,
-                        region = it.region,
-                        population = it.population,
-                        flagUrl = it.flags.png
-                    )
-                } ?: emptyList()
-            }*/
-
-            countries = apiRepository.getAllCountries().data?.map {
-                CountryEntity(
-                    name = it.name,
-                    region = it.region,
-                    population = it.population,
-                    flagUrl = it.flags.png
-                )
-            } ?: emptyList()
-
+            countries = apiRepository.getAllCountries().data ?: emptyList()
             generateNewRound()
         }
     }
@@ -79,6 +43,25 @@ class QuizViewModel @Inject constructor(
         when(event) {
             is QuizScreenEvent.OnNextRoundClick -> {
                 viewModelScope.launch {
+                    generateNewRound()
+                }
+            }
+            is QuizScreenEvent.OnAnswerClick -> {
+                viewModelScope.launch {
+                   if(isAnswerCorrect(event.country)) {
+                       sendUiEvent(
+                           UiEvent.ShowToast(
+                               message = "Correct"
+                           )
+                       )
+                   } else {
+                       sendUiEvent(
+                           UiEvent.ShowToast(
+                               message = "Wrong answer"
+                           )
+                       )
+                   }
+                    delay(1000)
                     generateNewRound()
                 }
             }
@@ -106,9 +89,13 @@ class QuizViewModel @Inject constructor(
         answersState.data.addAll(countriesForAnswers)
     }
 
+    private fun isAnswerCorrect(country: CountryBase) =
+        currentCountry.data?.name == country.name
+
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
     }
+
 }

@@ -15,7 +15,7 @@ class CountryDbRepositoryImpl(
     }
 
     override fun getCountriesByRegion(region: String): Flow<List<CountryEntity>> {
-        return dao.getCountriesByRegion(region)
+        return dao.getCountriesByRegion(region);
     }
 
     override fun getCountries(): Flow<List<CountryEntity>> {

@@ -40,19 +40,6 @@ class CountryRepositoryImpl @Inject constructor(
 
         val result = api.getAllCountriesBase()
 
-        //if database is empty
-        dbRepository.getCountries().onEmpty {
-            result.forEach{
-                val country = CountryEntity(
-                    name = it.name,
-                    region = it.region,
-                    population = it.population,
-                    flagUrl = it.flags.png
-                )
-                dbRepository.insertCountry(country)
-            }
-        }
-
         return try {
             Resource.Success(
                 data = result

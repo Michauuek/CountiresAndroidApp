@@ -20,8 +20,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    private val apiRepository: CountryRepository,
-    private val dbRepository: CountryDbRepository
+    private val apiRepository: CountryRepository
 ): ViewModel() {
 
     var state by mutableStateOf(CountryState())
