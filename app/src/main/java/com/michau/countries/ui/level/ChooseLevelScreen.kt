@@ -86,6 +86,9 @@ fun LevelButton(
         colors = ButtonDefaults.buttonColors(color),
         modifier = modifier
     ) {
-        Text(text = text)
+        Text(
+            text = text,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
