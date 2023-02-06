@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.michau.countries.domain.country_base.CountryBase
 import com.michau.countries.util.UiEvent
 import kotlinx.coroutines.flow.collect
 
@@ -33,13 +34,7 @@ fun QuizScreen(
                 is UiEvent.ShowToast -> {
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
                 }
-                is UiEvent.ChangeAnswerColor -> {
-                    //tileColor = event.color
-                }
-                is UiEvent.Navigate -> TODO()
-                is UiEvent.PopBackStack -> TODO()
-                is UiEvent.ShowSnackbar -> TODO()
-
+                else -> Unit
             }
         }
     }
@@ -58,19 +53,15 @@ fun QuizScreen(
             Text("Round ${viewModel.round}")
             Text("Points ${viewModel.points}")
 
-            Button(onClick = {
-                viewModel.onEvent(QuizScreenEvent.OnNextRoundClick)
-            }) {
-                Text("Start")
-            }
+            Spacer(modifier = Modifier.height(60.dp))
 
             Image(
                 painter = rememberAsyncImagePainter(viewModel.currentCountry.data?.flags?.png),
                 contentDescription = "Country flag",
-                modifier = Modifier.size(128.dp)
+                modifier = Modifier.size(180.dp)
             )
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(100.dp))
 
             LazyVerticalGrid(
                 cells = GridCells.Fixed(2),
@@ -79,12 +70,11 @@ fun QuizScreen(
             ) {
                 items(viewModel.answersState.data) { country ->
                     AnswerTile(
-                        name = country.name,
+                        name = country.name.substringBefore("("),
                         modifier = Modifier
                             .padding(10.dp)
-                            .clickable {
-                                viewModel.onEvent(QuizScreenEvent.OnAnswerClick(country))
-                        }
+                            .height(80.dp),
+                        country = country
                     )
                 }
             }
@@ -95,13 +85,38 @@ fun QuizScreen(
 @Composable
 fun AnswerTile(
     name: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    country: CountryBase,
+    viewModel: QuizViewModel = hiltViewModel()
 ){
-    Card(
+    var backgroundColor by remember { mutableStateOf(Color.White) }
+
+    LaunchedEffect(key1 = true){
+        viewModel.uiEvent.collect {event ->
+            when(event) {
+                is UiEvent.ChangeAnswerColor -> {
+                    backgroundColor = event.color
+                }
+                else -> Unit
+            }
+        }
+    }
+
+    Button(
         modifier = modifier,
-        backgroundColor = Color.White,
-        border = BorderStroke(2.dp, Color.Black)
+        border = BorderStroke(2.dp, Color.Black),
+        colors = ButtonDefaults.buttonColors(backgroundColor),
+        onClick = {
+            viewModel.onEvent(QuizScreenEvent.OnAnswerClick(country))
+            backgroundColor = if(viewModel.isAnswerCorrect(country)) Color.Green else Color.Red
+        }
     ) {
-        Text(text = name, maxLines = 2)
+        Column(
+            modifier = modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ){
+            Text(text = name, maxLines = 2)
+        }
     }
 }
