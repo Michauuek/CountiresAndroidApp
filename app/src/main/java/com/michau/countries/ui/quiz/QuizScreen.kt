@@ -18,6 +18,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.michau.countries.domain.country_base.CountryBase
+import com.michau.countries.ui.theme.BackgroundColor
 import com.michau.countries.util.UiEvent
 import kotlinx.coroutines.flow.collect
 
@@ -43,7 +44,9 @@ fun QuizScreen(
         scaffoldState = scaffoldState,
     ) {
         Column(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .background(BackgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

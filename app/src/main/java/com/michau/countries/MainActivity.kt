@@ -8,6 +8,7 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.ui.Modifier
 import com.michau.countries.ui.country.CountrySearch
+import com.michau.countries.ui.level.ChooseLevelScreen
 import com.michau.countries.ui.quiz.QuizScreen
 import com.michau.countries.ui.theme.OrdersYTTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,7 +24,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    QuizScreen()
+                    ChooseLevelScreen()
                 }
             }
         }
