@@ -61,7 +61,7 @@ fun ChooseLevelScreen(
                 items(viewModel.levels) { level ->
                     LevelButton(
                         color = Purple500,
-                        text = level,
+                        text = level.toString(),
                         modifier = Modifier
                             .padding(12.dp)
                             .size(120.dp, 55.dp),
