@@ -6,5 +6,5 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ChooseLevelViewModel @Inject constructor(): ViewModel() {
-    val levels = listOf("Easy", "Medium", "Hardcore")
+    val levels = Levels.values().toList()
 }
