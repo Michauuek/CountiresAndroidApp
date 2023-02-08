@@ -14,13 +14,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
-import com.michau.countries.domain.country_base.CountryBase
+import com.michau.countries.domain.model.CountryModel
 import com.michau.countries.ui.theme.BackgroundColor
 import com.michau.countries.util.UiEvent
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun QuizScreen(
@@ -53,13 +54,25 @@ fun QuizScreen(
 
             LinearProgressIndicator(progress = viewModel.progress)
 
-            Text("Round ${viewModel.round}")
-            Text("Points ${viewModel.points}")
+
+            Spacer(modifier = Modifier.height(20.dp))
+            Text(
+                text = "Round ${viewModel.round}",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            )
+            Text(
+                text = "Points ${viewModel.points}",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 24.sp
+            )
 
             Spacer(modifier = Modifier.height(60.dp))
 
             Image(
-                painter = rememberAsyncImagePainter(viewModel.currentCountry.data?.flags?.png),
+                painter = rememberAsyncImagePainter(viewModel.currentCountry?.flags?.png),
                 contentDescription = "Country flag",
                 modifier = Modifier.size(180.dp)
             )
@@ -71,12 +84,15 @@ fun QuizScreen(
                 modifier = Modifier.fillMaxWidth(),
                 contentPadding = PaddingValues(16.dp)
             ) {
-                items(viewModel.answersState.data) { country ->
+                items(viewModel.allAnswers) { country ->
                     AnswerTile(
                         name = country.name.substringBefore("("),
                         modifier = Modifier
                             .padding(10.dp)
-                            .height(80.dp),
+                            .height(80.dp)
+                            .clickable {
+                              viewModel.onEvent(QuizScreenEvent.OnAnswerClick(country))
+                            },
                         country = country
                     )
                 }
@@ -89,30 +105,12 @@ fun QuizScreen(
 fun AnswerTile(
     name: String,
     modifier: Modifier = Modifier,
-    country: CountryBase,
-    viewModel: QuizViewModel = hiltViewModel()
+    country: CountryModel
 ){
-    var backgroundColor by remember { mutableStateOf(Color.White) }
-
-    LaunchedEffect(key1 = true){
-        viewModel.uiEvent.collect {event ->
-            when(event) {
-                is UiEvent.ChangeAnswerColor -> {
-                    backgroundColor = event.color
-                }
-                else -> Unit
-            }
-        }
-    }
-
-    Button(
+    Card(
         modifier = modifier,
         border = BorderStroke(2.dp, Color.Black),
-        colors = ButtonDefaults.buttonColors(backgroundColor),
-        onClick = {
-            viewModel.onEvent(QuizScreenEvent.OnAnswerClick(country))
-            backgroundColor = if(viewModel.isAnswerCorrect(country)) Color.Green else Color.Red
-        }
+        backgroundColor = country.color
     ) {
         Column(
             modifier = modifier.fillMaxSize(),

@@ -1,14 +1,18 @@
 package com.michau.countries.ui.quiz
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Green
+import androidx.compose.ui.graphics.Color.Companion.Red
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michau.countries.data.remote.CountryRepository
-import com.michau.countries.domain.country_base.CountryBase
+import com.michau.countries.domain.mapper.toCountryModel
+import com.michau.countries.domain.model.CountryModel
 import com.michau.countries.util.Constants
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,13 +30,13 @@ class QuizViewModel @Inject constructor(
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    var answersState by mutableStateOf(AnswersState())
+    var allAnswers: MutableList<CountryModel> by mutableStateOf(mutableListOf())
         private set
 
-    var currentCountry by mutableStateOf(CurrentCountryState())
+    var currentCountry: CountryModel? by mutableStateOf(null)
         private set
 
-    var countries: MutableList<CountryBase> by mutableStateOf(mutableListOf())
+    var countries: MutableList<CountryModel> by mutableStateOf(mutableListOf())
         private set
 
     var points by mutableStateOf(0)
@@ -46,7 +50,9 @@ class QuizViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            countries = (apiRepository.getAllCountries().data ?: emptyList()).toMutableList()
+            countries = (apiRepository.getAllCountries().data?.map {
+                it.toCountryModel() } ?: emptyList()).toMutableList()
+
             generateNewRound()
         }
     }
@@ -58,17 +64,19 @@ class QuizViewModel @Inject constructor(
                 }
             }
             is QuizScreenEvent.OnAnswerClick -> {
-                viewModelScope.launch {
-                   if(isAnswerCorrect(event.country)) {
-                       sendUiEvent(UiEvent.ShowToast(message = "Correct"))
-                       points++
-                   } else {
-                       sendUiEvent(UiEvent.ShowToast(message = "Wrong answer"))
-                   }
-                    delay(1000)
 
-                    //send to UI white color of tile
-                    cleanTiles()
+                viewModelScope.launch {
+                    if(isAnswerCorrect(event.country)) {
+                        event.country.color = Green
+                        points++
+                    } else {
+                        sendUiEvent(UiEvent.ShowToast(
+                            message = "Correct was ${currentCountry?.name}"
+                        ))
+                        event.country.color = Red
+                    }
+
+                    delay(2000)
 
                     if(round < Constants.MAX_ROUND) {
                         round++
@@ -81,29 +89,26 @@ class QuizViewModel @Inject constructor(
         }
     }
     private fun generateNewRound(){
-        answersState = answersState.copy(data = mutableListOf())
+        allAnswers.forEach { it.color = White }
+        allAnswers = mutableListOf()
         selectCountry()
         generateWrongAnswers()
-        answersState.data.shuffle()
+        allAnswers.shuffle()
     }
 
     private fun selectCountry(){
         val randomCountry = countries.random()
         countries.remove(randomCountry)
-        currentCountry = currentCountry.copy(
-            data = randomCountry,
-            isLoading = false,
-            error = null
-        )
-        answersState.data.add(currentCountry.data!!)
+        currentCountry = randomCountry
+        allAnswers.add(currentCountry!!)
     }
     private fun generateWrongAnswers(){
         val countriesForAnswers = countries.shuffled().take(3)
-        answersState.data.addAll(countriesForAnswers)
+        allAnswers.addAll(countriesForAnswers)
     }
 
-    fun isAnswerCorrect(country: CountryBase) =
-        currentCountry.data?.name == country.name
+    private fun isAnswerCorrect(country: CountryModel) =
+        currentCountry?.name == country.name
 
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {
@@ -116,5 +121,4 @@ class QuizViewModel @Inject constructor(
             sendUiEvent(UiEvent.ChangeAnswerColor(Color.White))
         }
     }
-
 }
