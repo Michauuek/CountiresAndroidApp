@@ -117,7 +117,7 @@ fun AnswerTile(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            Text(text = name, maxLines = 2)
+            Text(text = name, maxLines = 2, color = Color.Black)
         }
     }
 }

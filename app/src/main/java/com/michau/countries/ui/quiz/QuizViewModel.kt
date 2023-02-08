@@ -1,13 +1,13 @@
 package com.michau.countries.ui.quiz
 
 import android.util.Log
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michau.countries.data.remote.CountryRepository
@@ -64,7 +64,6 @@ class QuizViewModel @Inject constructor(
                 }
             }
             is QuizScreenEvent.OnAnswerClick -> {
-
                 viewModelScope.launch {
                     if(isAnswerCorrect(event.country)) {
                         event.country.color = Green
@@ -74,6 +73,14 @@ class QuizViewModel @Inject constructor(
                             message = "Correct was ${currentCountry?.name}"
                         ))
                         event.country.color = Red
+
+                        //Change color of correct country
+                        for(answer in allAnswers){
+                            if(answer.name == currentCountry?.name) {
+                                answer.color = Green
+                            }
+                        }
+                        points--
                     }
 
                     delay(2000)
@@ -90,7 +97,7 @@ class QuizViewModel @Inject constructor(
     }
     private fun generateNewRound(){
         allAnswers.forEach { it.color = White }
-        allAnswers = mutableListOf()
+        allAnswers = mutableStateListOf()
         selectCountry()
         generateWrongAnswers()
         allAnswers.shuffle()
@@ -113,12 +120,6 @@ class QuizViewModel @Inject constructor(
     private fun sendUiEvent(event: UiEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
-        }
-    }
-
-    private fun cleanTiles(){
-        for(i in 1..4) {
-            sendUiEvent(UiEvent.ChangeAnswerColor(Color.White))
         }
     }
 }
