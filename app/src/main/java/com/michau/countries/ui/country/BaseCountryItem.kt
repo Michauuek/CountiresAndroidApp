@@ -7,17 +7,20 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 
 @Composable
 fun BaseCountryItem(
     name: String,
-    imageUrl: String
+    imageUrl: String,
+    modifier: Modifier = Modifier
 ){
 
     Column(
-        modifier = Modifier.height(200.dp).fillMaxWidth(),
+        modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ){
 
@@ -33,7 +36,11 @@ fun BaseCountryItem(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
         ) {
-            Text(text = name)
+            Text(
+                text = name,
+                color = Color.White,
+                fontSize = 22.sp
+            )
         }
     }
 

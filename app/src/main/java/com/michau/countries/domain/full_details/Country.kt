@@ -35,9 +35,6 @@ data class Country (
     @field:Json(name ="population")
     var population: Int? = null,
 
-    @field:Json(name ="latlng")
-    var latlng: List<Int> = arrayListOf(),
-
     @field:Json(name ="demonym")
     var demonym: String? = null,
 
