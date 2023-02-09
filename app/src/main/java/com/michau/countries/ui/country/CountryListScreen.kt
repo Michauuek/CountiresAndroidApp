@@ -2,6 +2,7 @@ package com.michau.countries.ui.country
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
@@ -45,29 +46,20 @@ fun CountrySearch(
             .background(BackgroundColor)
     ) {
 
-        Text(
-            modifier = Modifier.padding(20.dp),
-            text = "Countries List",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 30.sp
-        )
-
-
         LazyRow(
             modifier = Modifier
-            .fillMaxWidth()
-            .background(BackgroundColor)
+                .fillMaxWidth()
         ){
             items(UiConstants.regions){
                 Card(
                     modifier = Modifier
                         .background(BackgroundColor)
-                        .padding(5.dp)
+                        .padding(horizontal = 6.dp, vertical = 10.dp)
                         .size(width = 100.dp, height = 60.dp)
                         .clickable {
                             viewModel.loadRegionCountries(it)
                         },
+                    elevation = 10.dp,
                     contentColor = BackgroundColor,
                     shape = RoundedCornerShape(12.dp)
                 ) {
@@ -93,7 +85,7 @@ fun CountrySearch(
         ) {
             items(viewModel.countries.data) { country ->
                 BaseCountryItem(
-                    country.name,
+                    country.name.substringBefore("("),
                     country.flags.png,
                     modifier = Modifier
                         .height(200.dp)
