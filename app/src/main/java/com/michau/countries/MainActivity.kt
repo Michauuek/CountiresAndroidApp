@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.michau.countries.ui.category.CategoryScreen
 import com.michau.countries.ui.country.CountrySearch
 import com.michau.countries.ui.country_details.CountryDetailScreen
 import com.michau.countries.ui.level.ChooseLevelScreen
@@ -30,10 +31,24 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Routes.COUNTRIES_LIST
+                    startDestination = Routes.CATEGORY
                 ){
+                    composable(Routes.CATEGORY){
+                        CategoryScreen(
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            }
+                        )
+                    }
                     composable(Routes.COUNTRIES_LIST){
                         CountrySearch(
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            }
+                        )
+                    }
+                    composable(Routes.QUIZ_GAME){
+                        QuizScreen(
                             onNavigate = {
                                 navController.navigate(it.route)
                             }

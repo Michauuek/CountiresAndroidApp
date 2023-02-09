@@ -12,6 +12,7 @@ import com.michau.countries.domain.mapper.toCountryModel
 import com.michau.countries.domain.model.CountryModel
 import com.michau.countries.ui.level.Levels
 import com.michau.countries.util.Constants
+import com.michau.countries.util.Routes
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -105,6 +106,8 @@ class QuizViewModel @Inject constructor(
                         round++
                         progress += progressBarIncrease
                         generateNewRound()
+                    } else {
+                        sendUiEvent(UiEvent.Navigate(Routes.RESULT))
                     }
                 }
             }

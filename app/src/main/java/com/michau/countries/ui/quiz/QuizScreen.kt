@@ -25,6 +25,7 @@ import com.michau.countries.util.UiEvent
 
 @Composable
 fun QuizScreen(
+    onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: QuizViewModel = hiltViewModel()
 ){
     val scaffoldState = rememberScaffoldState()
@@ -33,9 +34,10 @@ fun QuizScreen(
     LaunchedEffect(key1 = true){
         viewModel.uiEvent.collect {event ->
             when(event) {
-                is UiEvent.ShowToast -> {
+                is UiEvent.ShowToast ->
                     Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
-                }
+                is UiEvent.Navigate ->
+                    onNavigate(event)
                 else -> Unit
             }
         }

@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.michau.countries.ui.theme.BackgroundColor
+import com.michau.countries.util.UiConstants
 import com.michau.countries.util.UiEvent
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -52,13 +53,13 @@ fun CountrySearch(
             fontSize = 30.sp
         )
 
-        val regions = listOf("Europe", "Africa", "Americas", "Asia", "Oceania")
+
         LazyRow(
             modifier = Modifier
             .fillMaxWidth()
             .background(BackgroundColor)
         ){
-            items(regions){
+            items(UiConstants.regions){
                 Card(
                     modifier = Modifier
                         .background(BackgroundColor)
@@ -67,6 +68,7 @@ fun CountrySearch(
                         .clickable {
                             viewModel.loadRegionCountries(it)
                         },
+                    contentColor = BackgroundColor,
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Row(
