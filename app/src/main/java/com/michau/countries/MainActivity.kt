@@ -18,6 +18,7 @@ import com.michau.countries.ui.country_details.CountryDetailScreen
 import com.michau.countries.ui.level.ChooseLevelScreen
 import com.michau.countries.ui.level.Levels
 import com.michau.countries.ui.quiz.QuizScreen
+import com.michau.countries.ui.result.ResultScreen
 import com.michau.countries.ui.theme.OrdersYTTheme
 import com.michau.countries.util.Routes
 import dagger.hilt.android.AndroidEntryPoint
@@ -50,6 +51,13 @@ class MainActivity : ComponentActivity() {
                     }
                     composable(Routes.QUIZ_LEVEL){
                         ChooseLevelScreen(
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            }
+                        )
+                    }
+                    composable(Routes.RESULT){
+                        ResultScreen(
                             onNavigate = {
                                 navController.navigate(it.route)
                             }
