@@ -86,7 +86,8 @@ fun QuizScreen(
             ) {
                 items(viewModel.allAnswers) { country ->
                     AnswerTile(
-                        name = country.name.substringBefore("("),
+                        name = country.name.substringBefore("(") +
+                                country.name.substringAfter(")"),
                         modifier = Modifier
                             .padding(10.dp)
                             .height(80.dp)

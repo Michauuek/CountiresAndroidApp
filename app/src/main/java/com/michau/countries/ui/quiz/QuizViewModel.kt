@@ -2,17 +2,15 @@ package com.michau.countries.ui.quiz
 
 import android.util.Log
 import androidx.compose.runtime.*
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Blue
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
-import androidx.compose.ui.graphics.Color.Companion.Yellow
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michau.countries.data.remote.CountryRepository
 import com.michau.countries.domain.mapper.toCountryModel
 import com.michau.countries.domain.model.CountryModel
+import com.michau.countries.ui.level.Levels
 import com.michau.countries.util.Constants
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -45,14 +43,30 @@ class QuizViewModel @Inject constructor(
     var round by mutableStateOf(1)
         private set
 
-    var progress by mutableStateOf(0.1f)
+    private val progressBarIncrease = ((100 / Constants.MAX_ROUND) * 0.01).toFloat()
+    var progress by mutableStateOf(progressBarIncrease)
 
 
     init {
         viewModelScope.launch {
             countries = (apiRepository.getAllCountries().data?.map {
                 it.toCountryModel() } ?: emptyList()).toMutableList()
-
+            //sort countries by population
+            countries.sortByDescending { countryModel ->
+                countryModel.population
+            }
+            val gameMode = Levels.Hardcore
+            countries = when(gameMode){
+                Levels.Easy -> {
+                    countries.toList().take(50).toMutableList()
+                }
+                Levels.Medium -> {
+                    countries.toList().drop(20).take(80).toMutableList()
+                }
+                Levels.Hardcore -> {
+                    countries.toList().takeLast(50).toMutableList()
+                }
+            }
             generateNewRound()
         }
     }
@@ -80,14 +94,16 @@ class QuizViewModel @Inject constructor(
                                 answer.color = Green
                             }
                         }
+                        //stupid way to update UI xD
                         points--
+                        points++
                     }
 
-                    delay(2000)
+                    delay(1000)
 
                     if(round < Constants.MAX_ROUND) {
                         round++
-                        progress += 0.1f
+                        progress += progressBarIncrease
                         generateNewRound()
                     }
                 }
