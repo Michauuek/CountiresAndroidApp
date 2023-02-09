@@ -16,6 +16,7 @@ import com.michau.countries.ui.category.CategoryScreen
 import com.michau.countries.ui.country.CountrySearch
 import com.michau.countries.ui.country_details.CountryDetailScreen
 import com.michau.countries.ui.level.ChooseLevelScreen
+import com.michau.countries.ui.level.Levels
 import com.michau.countries.ui.quiz.QuizScreen
 import com.michau.countries.ui.theme.OrdersYTTheme
 import com.michau.countries.util.Routes
@@ -47,7 +48,22 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-                    composable(Routes.QUIZ_GAME){
+                    composable(Routes.QUIZ_LEVEL){
+                        ChooseLevelScreen(
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            }
+                        )
+                    }
+                    composable(
+                        route = Routes.QUIZ_GAME + "?level={level}",
+                        arguments = listOf(
+                            navArgument(name = "level") {
+                                type = NavType.EnumType(Levels::class.java)
+                                defaultValue = Levels.Hardcore
+                            }
+                        )
+                    ) {
                         QuizScreen(
                             onNavigate = {
                                 navController.navigate(it.route)

@@ -20,7 +20,7 @@ class CategoryViewModel @Inject constructor(): ViewModel() {
     fun onEvent(event: CategoryEvent){
         when(event) {
             is CategoryEvent.OnQuizCategoryClick ->
-                sendUiEvent(UiEvent.Navigate(Routes.QUIZ_GAME))
+                sendUiEvent(UiEvent.Navigate(Routes.QUIZ_LEVEL))
             is CategoryEvent.OnCountryCategoryClick ->
                 sendUiEvent(UiEvent.Navigate(Routes.COUNTRIES_LIST))
         }

@@ -5,6 +5,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michau.countries.data.remote.CountryRepository
@@ -23,6 +24,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
     private val apiRepository: CountryRepository
 ): ViewModel(){
 
@@ -47,16 +49,18 @@ class QuizViewModel @Inject constructor(
     private val progressBarIncrease = ((100 / Constants.MAX_ROUND) * 0.01).toFloat()
     var progress by mutableStateOf(progressBarIncrease)
 
-
     init {
+        val gameMode = savedStateHandle.get<Levels>("level")!!
         viewModelScope.launch {
+
             countries = (apiRepository.getAllCountries().data?.map {
                 it.toCountryModel() } ?: emptyList()).toMutableList()
+
             //sort countries by population
             countries.sortByDescending { countryModel ->
                 countryModel.population
             }
-            val gameMode = Levels.Hardcore
+
             countries = when(gameMode){
                 Levels.Easy -> {
                     countries.toList().take(50).toMutableList()

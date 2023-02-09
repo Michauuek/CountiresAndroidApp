@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -54,6 +55,7 @@ fun QuizScreen(
             verticalArrangement = Arrangement.Center
         ) {
 
+            Spacer(modifier = Modifier.height(20.dp))
             LinearProgressIndicator(progress = viewModel.progress)
 
 
@@ -62,7 +64,7 @@ fun QuizScreen(
                 text = "Round ${viewModel.round}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 24.sp
+                fontSize = 32.sp
             )
             Text(
                 text = "Points ${viewModel.points}",
@@ -79,7 +81,7 @@ fun QuizScreen(
                 modifier = Modifier.size(180.dp)
             )
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(60.dp))
 
             LazyVerticalGrid(
                 cells = GridCells.Fixed(2),
@@ -93,7 +95,7 @@ fun QuizScreen(
                             .padding(10.dp)
                             .height(80.dp)
                             .clickable {
-                              viewModel.onEvent(QuizScreenEvent.OnAnswerClick(country))
+                                viewModel.onEvent(QuizScreenEvent.OnAnswerClick(country))
                             },
                         country = country
                     )
@@ -119,7 +121,12 @@ fun AnswerTile(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ){
-            Text(text = name, maxLines = 2, color = Color.Black)
+            Text(
+                text = name,
+                maxLines = 2,
+                color = Color.Black,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

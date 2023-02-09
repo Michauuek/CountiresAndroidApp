@@ -10,6 +10,7 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,12 +23,21 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.michau.countries.ui.theme.BackgroundColor
 import com.michau.countries.ui.theme.Purple500
+import com.michau.countries.util.UiEvent
 
 @Composable
-@Preview(showBackground = true)
 fun ChooseLevelScreen(
+    onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: ChooseLevelViewModel = hiltViewModel()
 ){
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when(event) {
+                is UiEvent.Navigate -> onNavigate(event)
+                else -> Unit
+            }
+        }
+    }
 
     Column(
         modifier = Modifier
@@ -65,7 +75,9 @@ fun ChooseLevelScreen(
                         modifier = Modifier
                             .padding(12.dp)
                             .size(120.dp, 55.dp),
-                        onClick = { Unit }
+                        onClick = {
+                            viewModel.onEvent(LevelScreenEvent.OnLevelClick(level))
+                        }
                     )
                 }
             }
