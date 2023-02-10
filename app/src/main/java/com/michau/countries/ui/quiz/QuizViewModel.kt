@@ -8,6 +8,8 @@ import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michau.countries.data.db.ResultDbRepository
+import com.michau.countries.data.db.ResultEntity
 import com.michau.countries.data.remote.CountryRepository
 import com.michau.countries.domain.mapper.toCountryModel
 import com.michau.countries.domain.model.CountryModel
@@ -25,7 +27,8 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val apiRepository: CountryRepository
+    private val apiRepository: CountryRepository,
+    private val dbRepository: ResultDbRepository
 ): ViewModel(){
 
     private val _uiEvent =  Channel<UiEvent>()
@@ -49,8 +52,11 @@ class QuizViewModel @Inject constructor(
     private val progressBarIncrease = ((100 / Constants.MAX_ROUND) * 0.01).toFloat()
     var progress by mutableStateOf(progressBarIncrease)
 
+    private var mode: Levels? = null
+
     init {
         val gameMode = savedStateHandle.get<Levels>("level")!!
+        mode = gameMode
         viewModelScope.launch {
 
             countries = (apiRepository.getAllCountries().data?.map {
@@ -111,7 +117,15 @@ class QuizViewModel @Inject constructor(
                         progress += progressBarIncrease
                         generateNewRound()
                     } else {
-                        sendUiEvent(UiEvent.Navigate(Routes.RESULT + "?points=${points})"))
+                        dbRepository.insertCountry(
+                            ResultEntity(
+                                mode = mode.toString(),
+                                points = points
+                            )
+                        )
+                        sendUiEvent(UiEvent.Navigate(
+                            Routes.RESULT + "?points=${points})"
+                        ))
                     }
                 }
             }
@@ -127,6 +141,7 @@ class QuizViewModel @Inject constructor(
     }
 
     private fun selectCountry(){
+        countries.shuffle()
         val randomCountry = countries.random()
         countries.remove(randomCountry)
         currentCountry = randomCountry

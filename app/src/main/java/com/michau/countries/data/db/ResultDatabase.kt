@@ -8,6 +8,6 @@ import androidx.room.RoomDatabase
     version = 1,
     exportSchema = false
 )
-abstract class CountryDatabase: RoomDatabase() {
-    abstract val dao: CountryDao
+abstract class ResultDatabase: RoomDatabase() {
+    abstract val dao: ResultDao
 }

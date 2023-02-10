@@ -8,5 +8,5 @@ data class ResultEntity(
     @PrimaryKey
     val id: Int? = null,
     val mode: String,
-    val points: Int
+    val points: Int,
 )

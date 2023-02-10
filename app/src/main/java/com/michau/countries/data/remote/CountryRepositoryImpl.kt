@@ -1,14 +1,13 @@
 package com.michau.countries.data.remote
 
-import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.ResultDbRepository
 import com.michau.countries.domain.country_base.CountryBase
 import com.michau.countries.domain.full_details.Country
 import com.michau.countries.util.Resource
 import javax.inject.Inject
 
 class CountryRepositoryImpl @Inject constructor(
-    private val api: CountryApi,
-    private val dbRepository: CountryDbRepository
+    private val api: CountryApi
 ): CountryRepository {
     override suspend fun getRegionCountries(region: String): Resource<List<CountryBase>> {
         return try {
