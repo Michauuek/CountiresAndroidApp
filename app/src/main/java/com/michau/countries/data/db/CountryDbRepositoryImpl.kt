@@ -6,19 +6,19 @@ class CountryDbRepositoryImpl(
     private val dao: CountryDao
 ): CountryDbRepository {
 
-    override suspend fun insertCountry(country: CountryEntity) {
+    override suspend fun insertCountry(country: ResultEntity) {
         dao.insertCountry(country)
     }
 
-    override suspend fun getCountryByName(name: String): CountryEntity? {
+    override suspend fun getCountryByName(name: String): ResultEntity? {
         return dao.getCountryByName(name)
     }
 
-    override fun getCountriesByRegion(region: String): Flow<List<CountryEntity>> {
+    override fun getCountriesByRegion(region: String): Flow<List<ResultEntity>> {
         return dao.getCountriesByRegion(region);
     }
 
-    override fun getCountries(): Flow<List<CountryEntity>> {
+    override fun getCountries(): Flow<List<ResultEntity>> {
         return dao.getCountries()
     }
 }

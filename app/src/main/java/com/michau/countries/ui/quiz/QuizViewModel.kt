@@ -111,7 +111,7 @@ class QuizViewModel @Inject constructor(
                         progress += progressBarIncrease
                         generateNewRound()
                     } else {
-                        sendUiEvent(UiEvent.Navigate(Routes.RESULT))
+                        sendUiEvent(UiEvent.Navigate(Routes.RESULT + "?points=${points})"))
                     }
                 }
             }

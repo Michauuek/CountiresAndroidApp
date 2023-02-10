@@ -1,11 +1,9 @@
 package com.michau.countries.data.remote
 
 import com.michau.countries.data.db.CountryDbRepository
-import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.domain.country_base.CountryBase
 import com.michau.countries.domain.full_details.Country
 import com.michau.countries.util.Resource
-import kotlinx.coroutines.flow.onEmpty
 import javax.inject.Inject
 
 class CountryRepositoryImpl @Inject constructor(

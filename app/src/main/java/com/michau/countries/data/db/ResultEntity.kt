@@ -4,11 +4,9 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class CountryEntity(
+data class ResultEntity(
     @PrimaryKey
     val id: Int? = null,
-    val name: String,
-    val flagUrl: String,
-    val region: String,
-    val population: Int
+    val mode: String,
+    val points: Int
 )

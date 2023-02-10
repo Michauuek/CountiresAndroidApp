@@ -56,7 +56,15 @@ class MainActivity : ComponentActivity() {
                             }
                         )
                     }
-                    composable(Routes.RESULT){
+                    composable(
+                        route = Routes.RESULT + "?points={points}",
+                        arguments = listOf(
+                            navArgument(name = "points") {
+                                type = NavType.IntType
+                                defaultValue = 0
+                            }
+                        )
+                    ) {
                         ResultScreen(
                             onNavigate = {
                                 navController.navigate(it.route)
