@@ -34,7 +34,7 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Routes.COUNTRY_BORDER
+                    startDestination = Routes.CATEGORY
                 ){
                     composable(Routes.COUNTRY_BORDER){
                         CountryBorderScreen(

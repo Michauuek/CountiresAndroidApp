@@ -8,6 +8,7 @@ object UiConstants {
     val regions = listOf("Europe", "Africa", "Americas", "Asia", "Oceania")
     val categories = listOf(
         Category("Countries", R.drawable.globe, CategoryEvent.OnCountryCategoryClick),
-        Category("Quiz", R.drawable.quiz, CategoryEvent.OnQuizCategoryClick)
+        Category("Quiz", R.drawable.quiz, CategoryEvent.OnQuizCategoryClick),
+        Category("Shape", R.drawable.shape, CategoryEvent.OnCountryShapeClick)
     )
 }

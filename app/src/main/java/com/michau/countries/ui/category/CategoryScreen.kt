@@ -46,7 +46,7 @@ fun CategoryScreen(
             CategoryItem(
                 category = category,
                 modifier = Modifier
-                    .padding(25.dp)
+                    .padding(vertical = 20.dp, horizontal = 40.dp)
                     .clickable {
                         viewModel.onEvent(category.onClick)
                     }

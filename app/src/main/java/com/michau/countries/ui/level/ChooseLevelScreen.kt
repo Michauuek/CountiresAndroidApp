@@ -70,7 +70,7 @@ fun ChooseLevelScreen(
             LazyColumn {
                 items(viewModel.levels) { level ->
                     LevelButton(
-                        color = Purple500,
+                        color = Color.Black,
                         text = level.toString(),
                         modifier = Modifier
                             .padding(16.dp)

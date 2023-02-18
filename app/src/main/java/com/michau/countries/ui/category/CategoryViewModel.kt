@@ -23,6 +23,8 @@ class CategoryViewModel @Inject constructor(): ViewModel() {
                 sendUiEvent(UiEvent.Navigate(Routes.QUIZ_LEVEL))
             is CategoryEvent.OnCountryCategoryClick ->
                 sendUiEvent(UiEvent.Navigate(Routes.COUNTRIES_LIST))
+            CategoryEvent.OnCountryShapeClick ->
+                sendUiEvent(UiEvent.Navigate(Routes.COUNTRY_BORDER))
         }
     }
     private fun sendUiEvent(event: UiEvent) {
