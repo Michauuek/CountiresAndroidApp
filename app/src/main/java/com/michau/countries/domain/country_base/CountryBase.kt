@@ -16,4 +16,7 @@ data class CountryBase(
 
     @field:Json(name ="population")
     var population: Int,
+
+    @field:Json(name ="alpha2Code")
+    var alpha2Code: String = ""
 )

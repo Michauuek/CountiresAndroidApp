@@ -9,5 +9,6 @@ fun CountryBase.toCountryModel() =
         name = this.name,
         region = this.region,
         flags = this.flags,
-        population = this.population
+        population = this.population,
+        alpha2Code = this.alpha2Code
     )

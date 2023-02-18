@@ -4,9 +4,10 @@ import androidx.compose.ui.graphics.Color
 import com.michau.countries.domain.full_details.Flags
 
 data class CountryModel(
-    var name: String = "",
-    var flags: Flags,
-    var region: String = "",
-    var population: Int,
+    val name: String = "",
+    val flags: Flags,
+    val region: String = "",
+    val population: Int,
+    val alpha2Code: String = "",
     var color: Color = Color.White
 )

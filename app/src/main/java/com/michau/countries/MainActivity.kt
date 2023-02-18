@@ -14,6 +14,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.michau.countries.ui.category.CategoryScreen
 import com.michau.countries.ui.country.CountrySearch
+import com.michau.countries.ui.country_border.CountryBorderScreen
 import com.michau.countries.ui.country_details.CountryDetailScreen
 import com.michau.countries.ui.level.ChooseLevelScreen
 import com.michau.countries.ui.level.Levels
@@ -33,8 +34,15 @@ class MainActivity : ComponentActivity() {
 
                 NavHost(
                     navController = navController,
-                    startDestination = Routes.CATEGORY
+                    startDestination = Routes.COUNTRY_BORDER
                 ){
+                    composable(Routes.COUNTRY_BORDER){
+                        CountryBorderScreen(
+                            onNavigate = {
+                                navController.navigate(it.route)
+                            }
+                        )
+                    }
                     composable(Routes.CATEGORY){
                         CategoryScreen(
                             onNavigate = {
