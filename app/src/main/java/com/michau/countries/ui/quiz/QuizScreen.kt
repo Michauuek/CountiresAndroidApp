@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -55,8 +56,11 @@ fun QuizScreen(
             verticalArrangement = Arrangement.Center
         ) {
 
-            Spacer(modifier = Modifier.height(20.dp))
-            LinearProgressIndicator(progress = viewModel.progress)
+            LinearProgressIndicator(
+                progress = viewModel.progress,
+                modifier = Modifier.padding(top = 42.dp),
+                color = Color(0xFF2E7D32)
+            )
 
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -73,7 +77,7 @@ fun QuizScreen(
                 fontSize = 24.sp
             )
 
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             Image(
                 painter = rememberAsyncImagePainter(viewModel.currentCountry?.flags?.png),
@@ -81,7 +85,7 @@ fun QuizScreen(
                 modifier = Modifier.size(180.dp)
             )
 
-            Spacer(modifier = Modifier.height(60.dp))
+            Spacer(modifier = Modifier.height(50.dp))
 
             LazyVerticalGrid(
                 cells = GridCells.Fixed(2),
@@ -114,7 +118,8 @@ fun AnswerTile(
     Card(
         modifier = modifier,
         border = BorderStroke(2.dp, Color.Black),
-        backgroundColor = country.color
+        backgroundColor = country.color,
+        shape = RoundedCornerShape(8.dp)
     ) {
         Column(
             modifier = modifier.fillMaxSize(),

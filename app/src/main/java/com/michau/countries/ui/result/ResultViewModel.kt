@@ -9,6 +9,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.michau.countries.data.db.ResultDbRepository
 import com.michau.countries.data.db.ResultEntity
+import com.michau.countries.ui.level.LevelScreenEvent
+import com.michau.countries.util.Routes
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -21,22 +23,31 @@ class ResultViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val dbRepository: ResultDbRepository
 ): ViewModel() {
+
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     private val results = mutableListOf<ResultEntity>()
 
-    var points by mutableStateOf(0)
+    var points by mutableStateOf("")
         private set
 
     init {
-        points = savedStateHandle.get<Int>("points")!!
-        Log.d("TAG", points.toString())
+        points = savedStateHandle.get<String>("points")!!
+
         viewModelScope.launch {
             dbRepository.getBestResults().collect {
-                Log.d("TAG", it.toString())
                 results.addAll(it)
             }
+        }
+    }
+
+    fun onEvent(event: ResultScreenEvent){
+        when(event) {
+            is ResultScreenEvent.OnHomeButtonClick ->
+                sendUiEvent(UiEvent.Navigate(
+                    Routes.CATEGORY
+                ))
         }
     }
 

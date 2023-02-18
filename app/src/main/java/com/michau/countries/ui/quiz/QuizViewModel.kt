@@ -2,6 +2,7 @@ package com.michau.countries.ui.quiz
 
 import android.util.Log
 import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
@@ -91,7 +92,7 @@ class QuizViewModel @Inject constructor(
             is QuizScreenEvent.OnAnswerClick -> {
                 viewModelScope.launch {
                     if(isAnswerCorrect(event.country)) {
-                        event.country.color = Green
+                        event.country.color = Color(0xFF43A047)
                         points++
                     } else {
                         sendUiEvent(UiEvent.ShowToast(
@@ -102,7 +103,7 @@ class QuizViewModel @Inject constructor(
                         //Change color of correct country
                         for(answer in allAnswers){
                             if(answer.name == currentCountry?.name) {
-                                answer.color = Green
+                                answer.color = Color(0xFF43A047)
                             }
                         }
                         //stupid way to update UI xD
@@ -124,7 +125,7 @@ class QuizViewModel @Inject constructor(
                             )
                         )
                         sendUiEvent(UiEvent.Navigate(
-                            Routes.RESULT + "?points=${points})"
+                            Routes.RESULT + "?points=${points}"
                         ))
                     }
                 }

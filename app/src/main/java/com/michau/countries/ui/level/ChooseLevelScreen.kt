@@ -70,11 +70,11 @@ fun ChooseLevelScreen(
             LazyColumn {
                 items(viewModel.levels) { level ->
                     LevelButton(
-                        color = Color.Black,
+                        color = Color(0xFF2E7D32),
                         text = level.toString(),
                         modifier = Modifier
-                            .padding(16.dp)
-                            .size(140.dp, 70.dp),
+                            .padding(12.dp)
+                            .size(160.dp, 80.dp),
                         onClick = {
                             viewModel.onEvent(LevelScreenEvent.OnLevelClick(level))
                         }
@@ -85,23 +85,3 @@ fun ChooseLevelScreen(
     }
 }
 
-@Composable
-fun LevelButton(
-    color: Color,
-    text: String,
-    modifier: Modifier = Modifier,
-    onClick: () -> Unit
-){
-    Button(
-        onClick = onClick,
-        shape = RoundedCornerShape(12.dp),
-        colors = ButtonDefaults.buttonColors(color),
-        modifier = modifier
-    ) {
-        Text(
-            text = text,
-            color = Color.White,
-            fontWeight = FontWeight.Bold
-        )
-    }
-}
