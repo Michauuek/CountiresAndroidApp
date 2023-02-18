@@ -73,8 +73,8 @@ fun ChooseLevelScreen(
                         color = Purple500,
                         text = level.toString(),
                         modifier = Modifier
-                            .padding(12.dp)
-                            .size(120.dp, 55.dp),
+                            .padding(16.dp)
+                            .size(140.dp, 70.dp),
                         onClick = {
                             viewModel.onEvent(LevelScreenEvent.OnLevelClick(level))
                         }
@@ -100,6 +100,7 @@ fun LevelButton(
     ) {
         Text(
             text = text,
+            color = Color.White,
             fontWeight = FontWeight.Bold
         )
     }

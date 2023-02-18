@@ -60,27 +60,27 @@ fun CountryDetailScreen(
         Text(
             text = "Capital city: ${viewModel.currentCountry?.capital}",
             color = Color.White,
-            fontSize = 24.sp
+            fontSize = 22.sp
         )
         Text(
             text = "Region: ${viewModel.currentCountry?.region}",
             color = Color.White,
-            fontSize = 24.sp
+            fontSize = 22.sp
         )
         Text(
             text = "Subregion: ${viewModel.currentCountry?.subregion}",
             color = Color.White,
-            fontSize = 24.sp
+            fontSize = 22.sp
         )
         Text(
-            text = "Capital city: ${viewModel.currentCountry?.capital}",
+            text = "Currency: ${viewModel.currentCountry?.currencies?.first()}",
             color = Color.White,
-            fontSize = 24.sp
+            fontSize = 22.sp
         )
         Text(
-            text = "Population: ${viewModel.currentCountry?.population}",
+            text = "Population: ${(viewModel.currentCountry?.population)?.times(0.000001)} million",
             color = Color.White,
-            fontSize = 24.sp
+            fontSize = 22.sp
         )
     }
 }

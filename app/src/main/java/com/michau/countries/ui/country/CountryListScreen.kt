@@ -55,13 +55,14 @@ fun CountrySearch(
                     modifier = Modifier
                         .background(BackgroundColor)
                         .padding(horizontal = 6.dp, vertical = 10.dp)
-                        .size(width = 100.dp, height = 60.dp)
+                        .size(width = 80.dp, height = 40.dp)
                         .clickable {
                             viewModel.loadRegionCountries(it)
                         },
                     elevation = 10.dp,
                     contentColor = BackgroundColor,
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
+                    backgroundColor = Color.White
                 ) {
                     Row(
                         modifier = Modifier.fillMaxSize(),
@@ -71,7 +72,7 @@ fun CountrySearch(
                         Text(
                             text = it,
                             color = Color.Black,
-                            fontSize = 18.sp
+                            fontSize = 16.sp
                         )
                     }
                 }
