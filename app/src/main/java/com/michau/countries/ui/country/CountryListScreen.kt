@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -54,6 +55,7 @@ fun CountrySearch(
                 Card(
                     modifier = Modifier
                         .background(BackgroundColor)
+                        .blur(10.dp)
                         .padding(horizontal = 6.dp, vertical = 10.dp)
                         .size(width = 80.dp, height = 40.dp)
                         .clickable {

@@ -18,6 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 @HiltViewModel
 class CountryDetailViewModel @Inject constructor(
@@ -31,12 +32,17 @@ class CountryDetailViewModel @Inject constructor(
     var currentCountry: Country? by mutableStateOf(null)
         private set
 
+    var population by mutableStateOf("")
+        private set
+
+    var currency by mutableStateOf("")
+        private set
+
     init {
         val countryName = savedStateHandle.get<String>("countryName")!!
         if(countryName.isNotBlank()) {
             viewModelScope.launch {
                 try{
-                    Log.d("TAG", countryName)
                     currentCountry = apiRepository
                         .getDetailsByCountryName(countryName)
                         .data?.firstOrNull {
@@ -44,6 +50,19 @@ class CountryDetailViewModel @Inject constructor(
                         }
                 } catch (e: Error){
                     sendUiEvent(UiEvent.PopBackStack)
+                }
+
+                population = if(currentCountry?.population!! > 1000000) {
+                    "${(currentCountry?.population)?.times(0.000001)?.roundToLong()} mln"
+                } else {
+                    "${currentCountry?.population}"
+                }
+
+                currency = try {
+                    "${currentCountry?.currencies?.first()?.name} " +
+                            "${currentCountry?.currencies?.first()?.symbol}"
+                } catch (e: Exception) {
+                    "Unknown"
                 }
             }
         }
