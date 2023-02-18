@@ -37,7 +37,7 @@ fun ResultScreen(
             .fillMaxSize()
             .background(BackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.SpaceEvenly
     ) {
         Text(
             text = "Your score is: ${viewModel.points}",
