@@ -3,6 +3,7 @@ package com.michau.countries.ui.country_details
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -43,55 +44,67 @@ fun CountryDetailScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
 
-        Text(
-            text = "${viewModel.currentCountry?.name?.substringBefore("(")}",
-            color = Color.White,
-            fontWeight = FontWeight.Bold,
-            fontSize = 28.sp,
-            textAlign = TextAlign.Center,
-        )
+        if(viewModel.isLoading){
+            CircularProgressIndicator(
+                color = Color(0xFF2E7D32)
+            )
+        }
+        else{
+            Text(
+                text = "${viewModel.currentCountry?.name?.substringBefore("(")}",
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+                fontSize = 28.sp,
+                textAlign = TextAlign.Center,
+            )
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Image(
-            painter = rememberAsyncImagePainter(viewModel.currentCountry?.flags?.png),
-            contentDescription = "Country flag",
-            modifier = Modifier
-                .size(180.dp)
-                .padding(15.dp)
-        )
+            Image(
+                painter = rememberAsyncImagePainter(viewModel.currentCountry?.flags?.png),
+                contentDescription = "Country flag",
+                modifier = Modifier
+                    .size(180.dp)
+                    .padding(15.dp)
+            )
 
-        Spacer(modifier = Modifier.height(30.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
-        Text(
-            text = "Capital city: ${viewModel.currentCountry?.capital ?: "No capital"}",
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(3.dp)
-        )
-        Text(
-            text = "Region: ${viewModel.currentCountry?.region}",
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(3.dp)
-        )
-        Text(
-            text = "Subregion: ${viewModel.currentCountry?.subregion}",
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(3.dp)
-        )
-        Text(
-            text = "Currency: ${viewModel.currency}",
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(3.dp)
-        )
-        Text(
-            text = "Population: ${viewModel.population}",
-            color = Color.White,
-            fontSize = 20.sp,
-            modifier = Modifier.padding(3.dp)
-        )
+            Text(
+                text = "Capital city: ${viewModel.currentCountry?.capital ?: "No capital"}",
+                color = Color.White,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(3.dp),
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Region: ${viewModel.currentCountry?.region}",
+                color = Color.White,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(3.dp),
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Subregion: ${viewModel.currentCountry?.subregion}",
+                color = Color.White,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(3.dp),
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Currency: ${viewModel.currency}",
+                color = Color.White,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(3.dp),
+                textAlign = TextAlign.Center,
+            )
+            Text(
+                text = "Population: ${viewModel.population}",
+                color = Color.White,
+                fontSize = 20.sp,
+                modifier = Modifier.padding(3.dp),
+                textAlign = TextAlign.Center,
+            )
+        }
     }
 }

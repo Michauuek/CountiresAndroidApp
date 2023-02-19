@@ -30,7 +30,8 @@ class CountryViewModel @Inject constructor(
     var countries by mutableStateOf(CountriesListState())
         private set
 
-    var countryName by mutableStateOf("")
+    var isLoading by mutableStateOf(true)
+        private set
 
     init {
         loadCountriesList()
@@ -88,6 +89,7 @@ class CountryViewModel @Inject constructor(
                     )
                 }
             }
+            isLoading = false
         }
     }
 

@@ -1,5 +1,6 @@
 package com.michau.countries.ui.country_border
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -20,6 +21,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -29,6 +31,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.michau.countries.ui.level.LevelButton
+import com.michau.countries.ui.result.ResultScreenEvent
 import com.michau.countries.ui.theme.BackgroundColor
 import com.michau.countries.util.UiEvent
 
@@ -55,6 +59,21 @@ fun CountryBorderScreen(
     }
     val interactionSource = remember {
         MutableInteractionSource()
+    }
+
+
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true){
+        viewModel.uiEvent.collect {event ->
+            when(event) {
+                is UiEvent.ShowToast ->
+                    Toast.makeText(context, event.message, Toast.LENGTH_SHORT).show()
+                is UiEvent.Navigate ->
+                    onNavigate(event)
+                else -> Unit
+            }
+        }
     }
 
     Column(
@@ -192,6 +211,16 @@ fun CountryBorderScreen(
 
             }
 
+        }
+
+        Row {
+            LevelButton(
+                color = Color(0xFF2E7D32),
+                text = "Guess",
+                onClick = {
+                    viewModel.onEvent(BorderScreenEvent.OnAnswerClick(currentCountry))
+                }
+            )
         }
     }
 }

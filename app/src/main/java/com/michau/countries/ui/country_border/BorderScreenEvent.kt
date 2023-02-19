@@ -4,5 +4,5 @@ import com.michau.countries.domain.model.CountryModel
 
 sealed class BorderScreenEvent {
     object OnNextRoundClick: BorderScreenEvent()
-    data class OnAnswerClick(val country: CountryModel): BorderScreenEvent()
+    data class OnAnswerClick(val country: String): BorderScreenEvent()
 }

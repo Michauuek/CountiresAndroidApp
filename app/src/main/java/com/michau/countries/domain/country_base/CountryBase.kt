@@ -18,5 +18,11 @@ data class CountryBase(
     var population: Int,
 
     @field:Json(name ="alpha2Code")
-    var alpha2Code: String = ""
+    var alpha2Code: String = "",
+
+    @field:Json(name ="latlng")
+    var latlng: List<Double> = arrayListOf(),
+
+    @field:Json(name ="borders")
+    var borders: List<String> = arrayListOf(),
 )

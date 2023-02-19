@@ -7,10 +7,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.Card
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
@@ -47,55 +44,66 @@ fun CountrySearch(
             .background(BackgroundColor)
     ) {
 
-        LazyRow(
-            modifier = Modifier
-                .fillMaxWidth()
-        ){
-            items(UiConstants.regions){
-                Card(
-                    modifier = Modifier
-                        .background(BackgroundColor)
-                        .blur(10.dp)
-                        .padding(horizontal = 6.dp, vertical = 10.dp)
-                        .size(width = 80.dp, height = 40.dp)
-                        .clickable {
-                            viewModel.loadRegionCountries(it)
-                        },
-                    elevation = 10.dp,
-                    contentColor = BackgroundColor,
-                    shape = RoundedCornerShape(12.dp),
-                    backgroundColor = Color.White
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ){
-                        Text(
-                            text = it,
-                            color = Color.Black,
-                            fontSize = 16.sp
-                        )
+        if(!viewModel.isLoading){
+            LazyRow(
+                modifier = Modifier
+                    .fillMaxWidth()
+            ) {
+                items(UiConstants.regions) {
+                    Card(
+                        modifier = Modifier
+                            .background(BackgroundColor)
+                            .padding(horizontal = 6.dp, vertical = 10.dp)
+                            .size(width = 80.dp, height = 40.dp)
+                            .clickable {
+                                viewModel.loadRegionCountries(it)
+                            },
+                        elevation = 20.dp,
+                        contentColor = BackgroundColor,
+                        shape = RoundedCornerShape(12.dp),
+                        backgroundColor = Color.White
+                    ) {
+                        Row(
+                            modifier = Modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.Center,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = it,
+                                color = Color.Black,
+                                fontSize = 16.sp
+                            )
+                        }
                     }
                 }
             }
-        }
 
-        LazyVerticalGrid(
-            cells = GridCells.Fixed(2),
-            modifier = Modifier.fillMaxWidth(),
-            contentPadding = PaddingValues(16.dp)
-        ) {
-            items(viewModel.countries.data) { country ->
-                BaseCountryItem(
-                    country.name.substringBefore("("),
-                    country.flags.png,
-                    modifier = Modifier
-                        .height(200.dp)
-                        .fillMaxWidth()
-                        .clickable {
-                            viewModel.onEvent(CountryListScreenEvent.OnCountryClick(country.name))
-                        }
+            LazyVerticalGrid(
+                cells = GridCells.Fixed(2),
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(16.dp)
+            ) {
+                items(viewModel.countries.data) { country ->
+                    BaseCountryItem(
+                        country.name.substringBefore("("),
+                        country.flags.png,
+                        modifier = Modifier
+                            .height(200.dp)
+                            .fillMaxWidth()
+                            .clickable {
+                                viewModel.onEvent(CountryListScreenEvent.OnCountryClick(country.name))
+                            }
+                    )
+                }
+            }
+        } else {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ){
+                CircularProgressIndicator(
+                    color = Color(0xFF2E7D32)
                 )
             }
         }

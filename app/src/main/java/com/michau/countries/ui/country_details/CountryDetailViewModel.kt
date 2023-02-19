@@ -38,8 +38,12 @@ class CountryDetailViewModel @Inject constructor(
     var currency by mutableStateOf("")
         private set
 
+    var isLoading by mutableStateOf(true)
+        private set
+
     init {
         val countryName = savedStateHandle.get<String>("countryName")!!
+
         if(countryName.isNotBlank()) {
             viewModelScope.launch {
                 try{
@@ -52,7 +56,7 @@ class CountryDetailViewModel @Inject constructor(
                     sendUiEvent(UiEvent.PopBackStack)
                 }
 
-                population = if(currentCountry?.population!! > 1000000) {
+                population = if((currentCountry?.population ?: 0) > 1000000) {
                     "${(currentCountry?.population)?.times(0.000001)?.roundToLong()} mln"
                 } else {
                     "${currentCountry?.population}"
@@ -64,6 +68,8 @@ class CountryDetailViewModel @Inject constructor(
                 } catch (e: Exception) {
                     "Unknown"
                 }
+
+                isLoading = false
             }
         }
     }

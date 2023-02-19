@@ -33,13 +33,16 @@ data class Country (
     var region: String? = null,
 
     @field:Json(name ="population")
-    var population: Int? = null,
+    var population: Int = 0,
 
     @field:Json(name ="demonym")
     var demonym: String? = null,
 
+    @field:Json(name ="latlng")
+    var latlng: List<Double> = arrayListOf(),
+
     @field:Json(name ="area")
-    var area: Int? = null,
+    var area: Double? = null,
 
     @field:Json(name ="gini")
     var gini: Double? = null,

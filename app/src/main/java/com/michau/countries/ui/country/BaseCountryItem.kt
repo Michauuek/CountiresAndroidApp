@@ -30,8 +30,6 @@ fun BaseCountryItem(
             modifier = Modifier.size(128.dp)
         )
 
-        Spacer(modifier = Modifier.height(4.dp))
-
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -40,7 +38,7 @@ fun BaseCountryItem(
             Text(
                 text = name,
                 color = Color.White,
-                fontSize = 20.sp,
+                fontSize = 18.sp,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
             )

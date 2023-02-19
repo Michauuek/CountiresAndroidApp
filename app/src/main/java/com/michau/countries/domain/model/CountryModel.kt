@@ -9,5 +9,7 @@ data class CountryModel(
     val region: String = "",
     val population: Int,
     val alpha2Code: String = "",
-    var color: Color = Color.White
+    val latlng: List<Double>,
+    val borders: List<String>,
+    var color: Color = Color.White,
 )
