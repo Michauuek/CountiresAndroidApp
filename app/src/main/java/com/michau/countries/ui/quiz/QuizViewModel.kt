@@ -95,9 +95,9 @@ class QuizViewModel @Inject constructor(
                         event.country.color = Color(0xFF43A047)
                         points++
                     } else {
-                        sendUiEvent(UiEvent.ShowToast(
+                        /*sendUiEvent(UiEvent.ShowToast(
                             message = "Correct was ${currentCountry?.name}"
-                        ))
+                        ))*/
                         event.country.color = Red
 
                         //Change color of correct country

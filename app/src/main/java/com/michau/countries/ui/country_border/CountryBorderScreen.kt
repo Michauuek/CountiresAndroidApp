@@ -27,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -271,9 +272,18 @@ fun DetailsTile(
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "${countryName.substringBefore("(")} ")
-        Text(text = "${distance}km ")
-        Text(text = "$direction ")
+        Text(
+            text = "${countryName.substringBefore("(")} ",
+            textAlign = TextAlign.Left
+        )
+        Text(
+            text = "$distance km ",
+            textAlign = TextAlign.Center
+        )
+        Text(
+            text = "$direction ",
+            textAlign = TextAlign.Right
+        )
     }
 }
 

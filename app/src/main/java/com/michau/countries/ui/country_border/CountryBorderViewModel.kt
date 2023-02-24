@@ -50,22 +50,11 @@ class CountryBorderViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            countries = (apiRepository
-                .getAllCountries()
-                .data
-                ?.map {
-                it.toCountryModel() } ?: emptyList()).toMutableList()
-
-            countries.sortByDescending { countryModel ->
-                countryModel.population
-            }
-
-            countries.toList().take(100).toMutableList().shuffle()
-            currentCountry = countries.random()
-
-            Log.d("TAG", currentCountry.toString())
+            generateCountries()
+            chooseNewCountry()
         }
     }
+
     fun onEvent(event: BorderScreenEvent){
         when(event) {
             is BorderScreenEvent.OnAnswerClick -> {
@@ -91,12 +80,17 @@ class CountryBorderViewModel @Inject constructor(
                     }
 
                     val guessedCountry = matchingCountries
-                        .first()
-                        .toCountryModel()
+                        .firstOrNull {
+                            event.country == it.name
+                        }?.toCountryModel()
 
-                    //guessedCountryName = guessedCountry.name
                     var distance: Int? = null
                     var angle: Double? = null
+
+                    if(currentCountry == null || guessedCountry == null) {
+                        UiEvent.ShowToast("Something went wrong")
+                        return@launch
+                    }
 
                     try {
                         distance = calculateDistanceInKilometer(
@@ -130,27 +124,27 @@ class CountryBorderViewModel @Inject constructor(
                         emptyTileNumber--
                     }
 
+                    if(triesNumber >= 3){
+                        startNewRound()
+                        sendUiEvent(UiEvent.ShowToast("This was: ${currentCountry?.name}"))
+                    }
+
                     if (distance == 0) {
-                        sendUiEvent(UiEvent.ShowToast("You've guessed correctly"))
                         guessState[triesNumber -1] = guessState[triesNumber -1].copy(
                             color = Color.Green
                         )
-                        buttonState = buttonState.copy(
-                            text = "Next"
-                        )
-                        isRoundFinished = true
-                    } else {
-                        sendUiEvent(
-                            UiEvent.ShowToast("Wrong answer distance: " +
-                                    "$distance angle: $direction"
-                            )
-                        )
+                        startNewRound()
                     }
                 }
             }
             BorderScreenEvent.OnNextRoundClick -> {
-                sendUiEvent(
-                    UiEvent.ShowToast("Next")
+                chooseNewCountry()
+                isRoundFinished = false
+                guessState = mutableListOf()
+                triesNumber = 0
+                emptyTileNumber = 3
+                buttonState = buttonState.copy(
+                    text = "Guess"
                 )
             }
         }
@@ -231,6 +225,44 @@ class CountryBorderViewModel @Inject constructor(
         }
     }
 
+    private fun startNewRound() {
+        buttonState = buttonState.copy(
+            text = "Next"
+        )
+        isRoundFinished = true
+    }
+
+    private suspend fun generateCountries() {
+        countries = (apiRepository
+            .getAllCountries()
+            .data
+            ?.map {
+                it.toCountryModel()
+            } ?: emptyList()).toMutableList()
+
+        countries.sortByDescending { countryModel ->
+            countryModel.population
+        }
+
+        countries = countries
+            .toList().take(100)
+            .toMutableList()
+            .shuffled().toMutableList()
+    }
+
+    private fun chooseNewCountry() {
+        if(countries.isEmpty()) {
+            return
+        }
+        currentCountry = countries.random()
+        Log.d("TAG", currentCountry.toString())
+    }
+    private fun sendUiEvent(event: UiEvent) {
+        viewModelScope.launch {
+            _uiEvent.send(event)
+        }
+    }
+
     data class GuessState(
         val countryName: String,
         val distance: Int,
@@ -241,9 +273,4 @@ class CountryBorderViewModel @Inject constructor(
     data class ButtonState(
         val text: String
     )
-    private fun sendUiEvent(event: UiEvent) {
-        viewModelScope.launch {
-            _uiEvent.send(event)
-        }
-    }
 }
