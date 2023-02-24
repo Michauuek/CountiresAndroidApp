@@ -17,6 +17,7 @@ import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
@@ -26,6 +27,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.toSize
@@ -86,18 +88,46 @@ fun CountryBorderScreen(
     ){
         
         AsyncImage(
+            modifier = Modifier.padding(top = 40.dp),
             model = "file:///android_asset/countries_outline/all/" +
                     "${viewModel.currentCountry?.alpha2Code.toString().lowercase()}/512.png",
             contentDescription = "",
             colorFilter = ColorFilter.tint(color = Color.White)
         )
         
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(60.dp))
+
+        repeat(viewModel.triesNumber){
+            DetailsTile(
+                countryName = viewModel.guessState[it].countryName,
+                distance =  viewModel.guessState[it].distance,
+                direction =  viewModel.guessState[it].direction,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(vertical = 2.dp, horizontal = 12.dp)
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .background(viewModel.guessState[it].color),
+            )
+        }
+
+        repeat(viewModel.emptyTileNumber){
+            EmptyGuessTile(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(vertical = 2.dp, horizontal = 12.dp)
+                    .clip(shape = RoundedCornerShape(10.dp))
+                    .background(Color.White),
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         // Category Field
         Column(
             modifier = Modifier
-                .padding(30.dp)
+                .padding(vertical = 30.dp, horizontal = 12.dp)
                 .fillMaxWidth()
                 .clickable(
                     interactionSource = interactionSource,
@@ -107,14 +137,6 @@ fun CountryBorderScreen(
                     }
                 )
         ) {
-
-            Text(
-                modifier = Modifier.padding(start = 3.dp, bottom = 2.dp),
-                text = "Country",
-                fontSize = 16.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Medium
-            )
 
             Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -211,16 +233,58 @@ fun CountryBorderScreen(
 
             }
 
-        }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
+                verticalAlignment = Alignment.Bottom,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                LevelButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(heightTextFields),
+                    color = Color(0xFF2E7D32),
+                    text = viewModel.buttonState.text,
+                    onClick = {
+                        if(viewModel.isRoundFinished)
+                            viewModel.onEvent(BorderScreenEvent.OnNextRoundClick)
+                        else
+                            viewModel.onEvent(BorderScreenEvent.OnAnswerClick(currentCountry))
+                    }
+                )
+            }
 
-        Row {
-            LevelButton(
-                color = Color(0xFF2E7D32),
-                text = "Guess",
-                onClick = {
-                    viewModel.onEvent(BorderScreenEvent.OnAnswerClick(currentCountry))
-                }
-            )
         }
+    }
+}
+
+@Composable
+fun DetailsTile(
+    countryName: String,
+    distance: Int,
+    direction: String,
+    modifier: Modifier = Modifier
+){
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "${countryName.substringBefore("(")} ")
+        Text(text = "${distance}km ")
+        Text(text = "$direction ")
+    }
+}
+
+@Composable
+fun EmptyGuessTile(
+    modifier: Modifier = Modifier
+){
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
     }
 }
