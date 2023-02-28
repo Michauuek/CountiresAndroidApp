@@ -13,7 +13,7 @@ Countries app is a fun and educational tool for users who want to learn more abo
 ### MVVM Architecture
 
 
-![334241769_158025320393552_4897506932170720386_n](https://user-images.githubusercontent.com/95347958/222005510-ac002105-1ced-4728-bd71-f9f192fdf1c2.jpg | width=100)
+![334241769_158025320393552_4897506932170720386_n](https://user-images.githubusercontent.com/95347958/222005510-ac002105-1ced-4728-bd71-f9f192fdf1c2.jpg =250x250)
 
 
 ![329360513_181926441227856_2532171235207658520_n](https://user-images.githubusercontent.com/95347958/222005517-7b1b8ac0-bf93-4e47-a7e1-18b91d96f7c5.jpg | width=100)
