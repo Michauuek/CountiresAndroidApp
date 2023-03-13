@@ -131,7 +131,7 @@ class CountryBorderViewModel @Inject constructor(
 
                     if (distance == 0) {
                         guessState[triesNumber -1] = guessState[triesNumber -1].copy(
-                            color = Color.Green
+                            color = Color(0xFF43A047)
                         )
                         startNewRound()
                     }
@@ -179,25 +179,19 @@ class CountryBorderViewModel @Inject constructor(
      *  using latitude and longitude
      */
     private fun angleFromCoordinate(
-        userLat: Double, userLng: Double,
-        venueLat: Double, venueLng: Double
+        lat1: Double, long1: Double,
+        lat2: Double, long2: Double
     ): Double {
-
-        val lat1 = Math.toRadians(userLat)
-        val lat2 = Math.toRadians(venueLat)
-        val long1 = Math.toRadians(userLng)
-        val long2 = Math.toRadians(venueLng)
-
-        val dLon = long1 - long2
-
+        val dLon = long2 - long1
         val y = sin(dLon) * cos(lat2)
         val x = cos(lat1) * sin(lat2) - (sin(lat1) * cos(lat2) * cos(dLon))
-
         var brng = atan2(y, x)
 
         brng = Math.toDegrees(brng)
         brng = (brng + 360) % 360
         brng = 360 - brng // count degrees counter-clockwise - remove to make clockwise
+
+        Log.d("TAG", brng.toString())
 
         return brng
     }
@@ -205,21 +199,21 @@ class CountryBorderViewModel @Inject constructor(
     private fun calculateDirection(angle: Double): String {
         return when(angle) {
             in 0.0..11.25 -> "north"
-            in 11.26..33.75 -> "north of north-east"
+            in 11.26..33.75 -> "north"
             in 33.76..56.25 -> "north-east"
-            in 56.26..78.75 -> "east-northeast"
+            in 56.26..78.75 -> "east"
             in 78.76..101.25 -> "east"
-            in 101.26..123.75 -> "east-southeast"
+            in 101.26..123.75 -> "east"
             in 123.76..146.25 -> "south-east"
-            in 146.26..168.75 -> "south-southeast"
+            in 146.26..168.75 -> "south"
             in 168.76..191.25 -> "south"
-            in 191.26..213.75 -> "south-southwest"
+            in 191.26..213.75 -> "south"
             in 213.76..236.25 -> "south-west"
-            in 236.26..258.75 -> "west-south-west"
+            in 236.26..258.75 -> "west"
             in 258.76..281.25 -> "west"
-            in 281.26..303.75 -> "west-northwest"
+            in 281.26..303.75 -> "west"
             in 303.76..326.25 -> "north-west"
-            in 326.26..348.67 -> "north-northwest"
+            in 326.26..348.67 -> "north"
             in 348.75..360.0 -> "north"
             else -> "unknown"
         }
