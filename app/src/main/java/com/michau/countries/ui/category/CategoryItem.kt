@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.michau.countries.domain.model.Category
 import com.michau.countries.ui.theme.BackgroundColor
+import com.michau.countries.ui.theme.ItemBackgroundColor
 
 @Composable
 fun CategoryItem(
@@ -26,7 +27,7 @@ fun CategoryItem(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        backgroundColor = BackgroundColor,
+        backgroundColor = ItemBackgroundColor,
         contentColor = Color.White
     ) {
         Column(

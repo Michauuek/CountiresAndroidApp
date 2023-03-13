@@ -1,5 +1,6 @@
 package com.michau.countries.ui.country
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    private val apiRepository: CountryRepository
+    private val apiRepository: CountryRepository,
+    private val dbCountryRepository: CountryRepository
 ): ViewModel() {
 
     private val _uiEvent =  Channel<UiEvent>()
@@ -73,6 +75,7 @@ class CountryViewModel @Inject constructor(
     }
     private fun loadCountriesList(){
         viewModelScope.launch {
+
             when(val result = apiRepository.getAllCountries()){
                 is Resource.Success -> {
                     countries = countries.copy(
