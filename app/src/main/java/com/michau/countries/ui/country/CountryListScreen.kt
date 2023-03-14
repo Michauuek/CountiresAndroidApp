@@ -48,6 +48,7 @@ fun CountrySearch(
         if(!viewModel.isLoading){
             LazyRow(
                 modifier = Modifier
+                    .padding(top = 6.dp)
                     .fillMaxWidth()
             ) {
                 items(UiConstants.regions) {
