@@ -157,9 +157,13 @@ class CountryBorderViewModel @Inject constructor(
      *  (6371 is Earth radius in km.)
      */
     private fun calculateDistanceInKilometer(
-        userLat: Double, userLng: Double,
-        venueLat: Double, venueLng: Double
+        userLat: Double?, userLng: Double?,
+        venueLat: Double?, venueLng: Double?
     ): Int {
+
+        if(userLat == null || userLng == null || venueLat == null || venueLng == null)
+            return -1
+
         val latDistance = Math.toRadians(userLat - venueLat)
         val lngDistance = Math.toRadians(userLng - venueLng)
 
@@ -177,9 +181,13 @@ class CountryBorderViewModel @Inject constructor(
      *  using latitude and longitude
      */
     private fun angleFromCoordinate(
-        lat1: Double, long1: Double,
-        lat2: Double, long2: Double
+        lat1: Double?, long1: Double?,
+        lat2: Double?, long2: Double?
     ): Double {
+
+        if(lat1 == null || long1 == null || lat2 == null || long2 == null)
+            return -1.0
+
         val dLon = long2 - long1
         val y = sin(dLon) * cos(lat2)
         val x = cos(lat1) * sin(lat2) - (sin(lat1) * cos(lat2) * cos(dLon))

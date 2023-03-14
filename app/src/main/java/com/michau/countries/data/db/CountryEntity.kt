@@ -1,6 +1,5 @@
 package com.michau.countries.data.db
 
-import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -12,14 +11,14 @@ data class CountryEntity(
     var capital: String?,
     var region: String,
     var subregion: String,
-    var currency: String? = null,
-    var currencySymbol: String? = null,
+    var currency: String?,
+    var currencySymbol: String?,
     var flag: String,
     var population: Int,
     var alpha2Code: String,
-    var latitude: Double,
-    var longitude: Double,
-    var tileColor: Long = Color.White.value.toLong(),
+    var latitude: Double?,
+    var longitude: Double?,
+    var tileColor: Long = 0xFFFFFFFF,
 ) {
     constructor() : this(
         0,
@@ -33,6 +32,7 @@ data class CountryEntity(
         0,
         "",
         0.0,
-        0.0
+        0.0,
+        0xFFFFFFFF
     )
 }

@@ -68,6 +68,8 @@ class QuizViewModel @Inject constructor(
                 countryModel.population
             }
 
+            countries.forEach { it.tileColor = 0xFFFFFFFF }
+
             countries = when(gameMode){
                 Levels.Easy -> {
                     countries.toList().take(50).toMutableList()
@@ -98,12 +100,12 @@ class QuizViewModel @Inject constructor(
                         /*sendUiEvent(UiEvent.ShowToast(
                             message = "Correct was ${currentCountry?.name}"
                         ))*/
-                        event.country.tileColor = Red.value.toLong()
+                        event.country.tileColor = 0xFFFF0000
 
                         //Change color of correct country
                         for(answer in allAnswers){
                             if(answer.name == currentCountry?.name) {
-                                answer.tileColor = 4282622023L
+                                answer.tileColor = 0xFF43A047
                             }
                         }
                         //stupid way to update UI xD
@@ -134,7 +136,7 @@ class QuizViewModel @Inject constructor(
         }
     }
     private fun generateNewRound(){
-        allAnswers.forEach { it.tileColor = White.value.toLong() }
+        allAnswers.forEach { it.tileColor = 0xFFFFFFFF }
         allAnswers = mutableStateListOf()
         selectCountry()
         generateWrongAnswers()

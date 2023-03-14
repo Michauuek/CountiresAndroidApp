@@ -29,13 +29,13 @@ data class CountryBase(
     var alpha2Code: String = "",
 
     @field:Json(name ="latlng")
-    var latlng: List<Double> = arrayListOf(),
+    var latlng: List<Double>? = arrayListOf(),
 
     @field:Json(name ="borders")
     var borders: List<String> = arrayListOf(),
 
     @field:Json(name ="currencies")
-    var currencies: List<Currencies> = arrayListOf(),
+    var currencies: List<Currencies>? = arrayListOf(),
 
     @field:Json(name ="languages")
     var languages: List<Languages> = arrayListOf(),
