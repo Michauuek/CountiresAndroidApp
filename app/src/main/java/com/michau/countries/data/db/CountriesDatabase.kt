@@ -4,10 +4,11 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [ResultEntity::class],
+    entities = [ResultEntity::class, CountryEntity::class],
     version = 1,
     exportSchema = false
 )
-abstract class ResultDatabase: RoomDatabase() {
+abstract class CountriesDatabase: RoomDatabase() {
     abstract val dao: ResultDao
+    abstract val countryDao: CountryDao
 }

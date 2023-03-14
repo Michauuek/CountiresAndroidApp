@@ -7,6 +7,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.data.remote.CountryRepository
 import com.michau.countries.domain.mapper.toCountryModel
 import com.michau.countries.domain.model.CountryModel
@@ -14,6 +16,7 @@ import com.michau.countries.util.Constants.AVERAGE_RADIUS_OF_EARTH_KM
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,16 +24,17 @@ import kotlin.math.*
 
 @HiltViewModel
 class CountryBorderViewModel @Inject constructor(
-    private val apiRepository: CountryRepository
+    private val apiRepository: CountryRepository,
+    private val dbRepository: CountryDbRepository
 ): ViewModel(){
 
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    var currentCountry: CountryModel? by mutableStateOf(null)
+    var currentCountry: CountryEntity? by mutableStateOf(null)
         private set
 
-    var countries: MutableList<CountryModel> by mutableStateOf(mutableListOf())
+    var countries: MutableList<CountryEntity> by mutableStateOf(mutableListOf())
         private set
 
     var triesNumber by mutableStateOf(0)
@@ -68,42 +72,36 @@ class CountryBorderViewModel @Inject constructor(
                         return@launch
                     }
 
-                    val matchingCountries = apiRepository
-                        .getDetailsByCountryName(event.country)
-                        .data
+                    val guessedCountry = dbRepository
+                        .getCountryByName(event.country)
 
-                    if(matchingCountries == null || matchingCountries.isEmpty()){
+                    if(guessedCountry == null){
                         sendUiEvent(
                             UiEvent.ShowToast("Select country from the list")
                         )
                         return@launch
                     }
 
-                    val guessedCountry = matchingCountries
-                        .firstOrNull {
-                            event.country == it.name
-                        }?.toCountryModel()
-
                     var distance: Int? = null
                     var angle: Double? = null
 
-                    if(currentCountry == null || guessedCountry == null) {
+                    if(currentCountry == null) {
                         UiEvent.ShowToast("Something went wrong")
                         return@launch
                     }
 
                     try {
                         distance = calculateDistanceInKilometer(
-                            currentCountry?.latlng?.component1()!!,
-                            currentCountry?.latlng?.component2()!!,
-                            guessedCountry.latlng.component1(),
-                            guessedCountry.latlng.component2()
+                            currentCountry!!.latitude,
+                            currentCountry!!.longitude,
+                            guessedCountry.latitude,
+                            guessedCountry.longitude
                         )
                         angle = angleFromCoordinate(
-                            currentCountry?.latlng?.component1()!!,
-                            currentCountry?.latlng?.component2()!!,
-                            guessedCountry.latlng.component1(),
-                            guessedCountry.latlng.component2()
+                            currentCountry!!.latitude,
+                            currentCountry!!.longitude,
+                            guessedCountry.latitude,
+                            guessedCountry.longitude
                         )
                     } catch (e: IndexOutOfBoundsException) {
                         e.printStackTrace()
@@ -159,9 +157,13 @@ class CountryBorderViewModel @Inject constructor(
      *  (6371 is Earth radius in km.)
      */
     private fun calculateDistanceInKilometer(
-        userLat: Double, userLng: Double,
-        venueLat: Double, venueLng: Double
+        userLat: Double?, userLng: Double?,
+        venueLat: Double?, venueLng: Double?
     ): Int {
+
+        if(userLat == null || userLng == null || venueLat == null || venueLng == null)
+            return -1
+
         val latDistance = Math.toRadians(userLat - venueLat)
         val lngDistance = Math.toRadians(userLng - venueLng)
 
@@ -179,9 +181,13 @@ class CountryBorderViewModel @Inject constructor(
      *  using latitude and longitude
      */
     private fun angleFromCoordinate(
-        lat1: Double, long1: Double,
-        lat2: Double, long2: Double
+        lat1: Double?, long1: Double?,
+        lat2: Double?, long2: Double?
     ): Double {
+
+        if(lat1 == null || long1 == null || lat2 == null || long2 == null)
+            return -1.0
+
         val dLon = long2 - long1
         val y = sin(dLon) * cos(lat2)
         val x = cos(lat1) * sin(lat2) - (sin(lat1) * cos(lat2) * cos(dLon))
@@ -227,12 +233,9 @@ class CountryBorderViewModel @Inject constructor(
     }
 
     private suspend fun generateCountries() {
-        countries = (apiRepository
-            .getAllCountries()
-            .data
-            ?.map {
-                it.toCountryModel()
-            } ?: emptyList()).toMutableList()
+        countries = dbRepository
+            .getCountries()
+            .toMutableList()
 
         countries.sortByDescending { countryModel ->
             countryModel.population

@@ -3,6 +3,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'
+
 }
 
 android {
@@ -102,4 +103,6 @@ dependencies {
 
     //splash screen
     implementation 'androidx.core:core-splashscreen:1.0.0'
+
+    kapt "android.arch.persistence.room:compiler:1.0.0-alpha4"
 }

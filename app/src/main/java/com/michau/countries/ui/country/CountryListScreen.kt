@@ -42,6 +42,7 @@ fun CountrySearch(
         modifier = Modifier
             .fillMaxSize()
             .background(BackgroundColor)
+            .padding(top = 20.dp)
     ) {
 
         if(!viewModel.isLoading){
@@ -53,7 +54,7 @@ fun CountrySearch(
                     Card(
                         modifier = Modifier
                             .background(BackgroundColor)
-                            .padding(horizontal = 6.dp, vertical = 10.dp)
+                            .padding(horizontal = 6.dp, vertical = 8.dp)
                             .size(width = 80.dp, height = 40.dp)
                             .clickable {
                                 viewModel.loadRegionCountries(it)
@@ -81,12 +82,12 @@ fun CountrySearch(
             LazyVerticalGrid(
                 cells = GridCells.Fixed(2),
                 modifier = Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(16.dp)
+                contentPadding = PaddingValues(12.dp)
             ) {
                 items(viewModel.countries.data) { country ->
                     BaseCountryItem(
                         country.name.substringBefore("("),
-                        country.flags.png,
+                        country.flag,
                         modifier = Modifier
                             .height(200.dp)
                             .fillMaxWidth()

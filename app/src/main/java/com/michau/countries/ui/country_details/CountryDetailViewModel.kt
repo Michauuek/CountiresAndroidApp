@@ -9,6 +9,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.data.remote.CountryRepository
 import com.michau.countries.domain.full_details.Country
 import com.michau.countries.util.UiEvent
@@ -22,14 +24,14 @@ import kotlin.math.roundToLong
 
 @HiltViewModel
 class CountryDetailViewModel @Inject constructor(
-    private val apiRepository: CountryRepository,
+    private val dbRepository: CountryDbRepository,
     savedStateHandle: SavedStateHandle
 ): ViewModel() {
 
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    var currentCountry: Country? by mutableStateOf(null)
+    var currentCountry: CountryEntity? by mutableStateOf(null)
         private set
 
     var population by mutableStateOf("")
@@ -46,12 +48,9 @@ class CountryDetailViewModel @Inject constructor(
 
         if(countryName.isNotBlank()) {
             viewModelScope.launch {
+
                 try{
-                    currentCountry = apiRepository
-                        .getDetailsByCountryName(countryName)
-                        .data?.firstOrNull {
-                            countryName == it.name
-                        }
+                    currentCountry = dbRepository.getCountryByName(countryName)
                 } catch (e: Error){
                     sendUiEvent(UiEvent.PopBackStack)
                 }
@@ -63,8 +62,8 @@ class CountryDetailViewModel @Inject constructor(
                 }
 
                 currency = try {
-                    "${currentCountry?.currencies?.first()?.name} " +
-                            "${currentCountry?.currencies?.first()?.symbol}"
+                    "${currentCountry?.currency} " +
+                            "${currentCountry?.currencySymbol}"
                 } catch (e: Exception) {
                     "Unknown"
                 }
