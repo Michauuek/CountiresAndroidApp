@@ -19,5 +19,8 @@ interface CountryDao {
     suspend fun getCountryByName(name: String): CountryEntity?
 
     @Query("SELECT * FROM countries")
-    fun getCountries(): Flow<List<CountryEntity>>
+    suspend fun getCountries(): List<CountryEntity>
+
+    @Query("SELECT * FROM countries WHERE region = :region")
+    suspend fun getCountriesByRegion(region: String): List<CountryEntity>
 }

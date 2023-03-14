@@ -87,7 +87,7 @@ fun CountrySearch(
                 items(viewModel.countries.data) { country ->
                     BaseCountryItem(
                         country.name.substringBefore("("),
-                        country.flags.png,
+                        country.flag,
                         modifier = Modifier
                             .height(200.dp)
                             .fillMaxWidth()

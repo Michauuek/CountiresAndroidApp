@@ -61,7 +61,7 @@ fun CountryDetailScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             Image(
-                painter = rememberAsyncImagePainter(viewModel.currentCountry?.flags?.png),
+                painter = rememberAsyncImagePainter(viewModel.currentCountry?.flag),
                 contentDescription = "Country flag",
                 modifier = Modifier
                     .size(180.dp)

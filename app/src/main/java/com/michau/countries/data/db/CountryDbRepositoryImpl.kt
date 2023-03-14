@@ -1,7 +1,5 @@
 package com.michau.countries.data.db
 
-import kotlinx.coroutines.flow.Flow
-
 class CountryDbRepositoryImpl(
     private val dao: CountryDao
 ): CountryDbRepository {
@@ -14,7 +12,11 @@ class CountryDbRepositoryImpl(
         return dao.getCountryByName(name)
     }
 
-    override suspend fun getCountries(): Flow<List<CountryEntity>> {
+    override suspend fun getCountries(): List<CountryEntity> {
         return dao.getCountries()
+    }
+
+    override suspend fun getCountriesByRegion(region: String): List<CountryEntity> {
+        return dao.getCountriesByRegion(region)
     }
 }

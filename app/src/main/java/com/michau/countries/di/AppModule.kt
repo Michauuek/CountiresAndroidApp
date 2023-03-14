@@ -62,14 +62,16 @@ object AppModule {
                 super.onCreate(db)
 
                 GlobalScope.launch(Dispatchers.IO) {
-                    countryDB.countryDao.insertAll(
-                        CountryRepositoryImpl(api)
-                            .getAllCountries()
-                            .data
-                            ?.map {
-                                it.toCountryEntity()
-                            } ?: emptyList()
-                    )
+                    CountryRepositoryImpl(api)
+                        .getAllCountries()
+                        .data
+                        ?.map {
+                            it.toCountryEntity()
+                        }?.let {
+                            countryDB.countryDao.insertAll(
+                                it
+                            )
+                        }
                 }
             }
         }).build()

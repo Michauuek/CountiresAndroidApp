@@ -6,28 +6,23 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.michau.countries.data.remote.CountryRepository
-import com.michau.countries.ui.quiz.QuizScreenEvent
-import com.michau.countries.util.Resource
+import com.michau.countries.data.db.CountryDbRepository
 import com.michau.countries.util.Routes
 import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class CountryViewModel @Inject constructor(
-    private val apiRepository: CountryRepository,
-    private val dbCountryRepository: CountryRepository
+    private val dbRepository: CountryDbRepository
 ): ViewModel() {
 
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-
-    var state by mutableStateOf(CountryState())
-        private set
 
     var countries by mutableStateOf(CountriesListState())
         private set
@@ -55,70 +50,25 @@ class CountryViewModel @Inject constructor(
                 isLoading = true,
                 error = null
             )
-            when(val result = apiRepository.getRegionCountries(region)){
-                is Resource.Success -> {
-                    countries = countries.copy(
-                        data = result.data!!,
-                        isLoading = false,
-                        error = null
-                    )
-                }
-                is Resource.Error -> {
-                    countries = countries.copy(
-                        data = emptyList(),
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-            }
+
+            countries = countries.copy(
+                data = dbRepository.getCountriesByRegion(region),
+                isLoading = false,
+                error = null
+            )
         }
     }
     private fun loadCountriesList(){
         viewModelScope.launch {
 
-            when(val result = apiRepository.getAllCountries()){
-                is Resource.Success -> {
-                    countries = countries.copy(
-                        data = result.data!!,
-                        isLoading = false,
-                        error = null
-                    )
-                }
-                is Resource.Error -> {
-                    countries = countries.copy(
-                        data = emptyList(),
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-            }
-            isLoading = false
-        }
-    }
+            Log.d("TAG", dbRepository.getCountries().count().toString())
 
-    fun loadCountryInfo(name: String){
-        viewModelScope.launch {
-            state = state.copy(
-                isLoading = true,
+            countries = countries.copy(
+                data = dbRepository.getCountries(),
+                isLoading = false,
                 error = null
             )
-
-            when(val result = apiRepository.getDetailsByCountryName(name)){
-                is Resource.Success -> {
-                    state = state.copy(
-                        country = result.data?.first(),
-                        isLoading = false,
-                        error = null
-                    )
-                }
-                is Resource.Error -> {
-                    state = state.copy(
-                        country = null,
-                        isLoading = false,
-                        error = result.message
-                    )
-                }
-            }
+            isLoading = false
         }
     }
 

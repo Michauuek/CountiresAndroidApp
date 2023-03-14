@@ -1,18 +1,16 @@
 package com.michau.countries.ui.quiz
 
-import android.util.Log
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Color.Companion.Green
 import androidx.compose.ui.graphics.Color.Companion.Red
 import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.michau.countries.data.db.CountryDbRepository
+import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.data.db.ResultDbRepository
 import com.michau.countries.data.db.ResultEntity
-import com.michau.countries.data.remote.CountryRepository
-import com.michau.countries.domain.mapper.toCountryModel
 import com.michau.countries.domain.model.CountryModel
 import com.michau.countries.ui.level.Levels
 import com.michau.countries.util.Constants
@@ -21,6 +19,7 @@ import com.michau.countries.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -28,20 +27,20 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val apiRepository: CountryRepository,
-    private val dbRepository: ResultDbRepository
+    private val dbResultRepository: ResultDbRepository,
+    private val dbCountryRepository: CountryDbRepository,
 ): ViewModel(){
 
     private val _uiEvent =  Channel<UiEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
-    var allAnswers: MutableList<CountryModel> by mutableStateOf(mutableListOf())
+    var allAnswers: MutableList<CountryEntity> by mutableStateOf(mutableListOf())
         private set
 
-    var currentCountry: CountryModel? by mutableStateOf(null)
+    var currentCountry: CountryEntity? by mutableStateOf(null)
         private set
 
-    var countries: MutableList<CountryModel> by mutableStateOf(mutableListOf())
+    var countries: MutableList<CountryEntity> by mutableStateOf(mutableListOf())
         private set
 
     var points by mutableStateOf(0)
@@ -60,8 +59,9 @@ class QuizViewModel @Inject constructor(
         mode = gameMode
         viewModelScope.launch {
 
-            countries = (apiRepository.getAllCountries().data?.map {
-                it.toCountryModel() } ?: emptyList()).toMutableList()
+            countries = dbCountryRepository
+                .getCountries()
+                .toMutableList()
 
             //sort countries by population
             countries.sortByDescending { countryModel ->
@@ -92,18 +92,18 @@ class QuizViewModel @Inject constructor(
             is QuizScreenEvent.OnAnswerClick -> {
                 viewModelScope.launch {
                     if(isAnswerCorrect(event.country)) {
-                        event.country.color = Color(0xFF43A047)
+                        event.country.tileColor = 0xFF43A047
                         points++
                     } else {
                         /*sendUiEvent(UiEvent.ShowToast(
                             message = "Correct was ${currentCountry?.name}"
                         ))*/
-                        event.country.color = Red
+                        event.country.tileColor = Red.value.toLong()
 
                         //Change color of correct country
                         for(answer in allAnswers){
                             if(answer.name == currentCountry?.name) {
-                                answer.color = Color(0xFF43A047)
+                                answer.tileColor = 4282622023L
                             }
                         }
                         //stupid way to update UI xD
@@ -118,7 +118,7 @@ class QuizViewModel @Inject constructor(
                         progress += progressBarIncrease
                         generateNewRound()
                     } else {
-                        dbRepository.insertCountry(
+                        dbResultRepository.insertCountry(
                             ResultEntity(
                                 mode = mode.toString(),
                                 points = points
@@ -134,7 +134,7 @@ class QuizViewModel @Inject constructor(
         }
     }
     private fun generateNewRound(){
-        allAnswers.forEach { it.color = White }
+        allAnswers.forEach { it.tileColor = White.value.toLong() }
         allAnswers = mutableStateListOf()
         selectCountry()
         generateWrongAnswers()
@@ -153,7 +153,7 @@ class QuizViewModel @Inject constructor(
         allAnswers.addAll(countriesForAnswers)
     }
 
-    private fun isAnswerCorrect(country: CountryModel) =
+    private fun isAnswerCorrect(country: CountryEntity) =
         currentCountry?.name == country.name
 
     private fun sendUiEvent(event: UiEvent) {

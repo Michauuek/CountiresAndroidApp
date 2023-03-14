@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.michau.countries.data.db.CountryEntity
 import com.michau.countries.domain.model.CountryModel
 import com.michau.countries.ui.theme.BackgroundColor
 import com.michau.countries.util.UiEvent
@@ -80,7 +81,7 @@ fun QuizScreen(
             Spacer(modifier = Modifier.height(50.dp))
 
             Image(
-                painter = rememberAsyncImagePainter(viewModel.currentCountry?.flags?.png),
+                painter = rememberAsyncImagePainter(viewModel.currentCountry?.flag),
                 contentDescription = "Country flag",
                 modifier = Modifier.size(180.dp)
             )
@@ -113,12 +114,12 @@ fun QuizScreen(
 fun AnswerTile(
     name: String,
     modifier: Modifier = Modifier,
-    country: CountryModel
+    country: CountryEntity
 ){
     Card(
         modifier = modifier,
         border = BorderStroke(2.dp, Color.Black),
-        backgroundColor = country.color,
+        backgroundColor = Color(country.tileColor),
         shape = RoundedCornerShape(8.dp)
     ) {
         Column(
