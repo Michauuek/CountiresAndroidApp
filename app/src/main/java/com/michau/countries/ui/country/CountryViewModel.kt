@@ -46,16 +46,25 @@ class CountryViewModel @Inject constructor(
 
     fun loadRegionCountries(region: String){
         viewModelScope.launch {
+
             countries = countries.copy(
                 isLoading = true,
                 error = null
             )
 
-            countries = countries.copy(
-                data = dbRepository.getCountriesByRegion(region),
-                isLoading = false,
-                error = null
-            )
+            if(region == "All"){
+                countries = countries.copy(
+                    data = dbRepository.getCountries(),
+                    isLoading = false,
+                    error = null
+                )
+            } else {
+                countries = countries.copy(
+                    data = dbRepository.getCountriesByRegion(region),
+                    isLoading = false,
+                    error = null
+                )
+            }
         }
     }
     private fun loadCountriesList(){
